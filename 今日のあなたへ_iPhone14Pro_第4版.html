@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8edf5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="今日のあなたへ">
+<title>今日のあなたへ</title>
+<style>
+:root{--bg:#fbf6f9;--card:#fff;--ink:#493f49;--muted:#8d818d;--pink:#d78bb1;--lav:#a99bd7;--line:#eee2ea;--shadow:0 8px 28px rgba(112,83,105,.10)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:linear-gradient(180deg,#f8edf5 0,#fbf8fb 42%,#f5f1fa 100%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}
+button,input,textarea{font:inherit}
+button{border:0}
+.app{width:100%;max-width:430px;min-height:100vh;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(92px + env(safe-area-inset-bottom))}
+header{padding:8px 4px 18px}
+.logo{font-size:13px;color:#a37898;letter-spacing:.12em}
+h1{font-size:28px;margin:5px 0 3px;letter-spacing:.04em}
+.sub{font-size:13px;color:var(--muted)}
+.view{display:none}.view.active{display:block}
+.card{background:rgba(255,255,255,.88);border:1px solid rgba(238,226,234,.9);border-radius:24px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}
+.hero{background:linear-gradient(135deg,#fff 0,#fff3f8 55%,#f0ecfb 100%)}
+.greeting{font-size:14px;color:#876d80;margin-bottom:8px}
+.message{font-size:22px;line-height:1.55;font-weight:700}
+.small{font-size:12px;color:var(--muted);line-height:1.7}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.badge{padding:8px 11px;border-radius:999px;background:#f7edf4;color:#785f72;font-size:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px}
+.tile b{display:block;margin:4px 0 6px;font-size:14px}.tile span{font-size:12px;color:var(--muted)}
+.score{font-size:23px;font-weight:800;color:#9d6c90}
+.section-title{font-size:15px;font-weight:800;margin:4px 2px 10px}
+.btn{width:100%;padding:14px 16px;border-radius:16px;background:linear-gradient(135deg,#d894b8,#aa9bd8);color:#fff;font-weight:700;box-shadow:0 7px 16px rgba(165,126,164,.20)}
+.btn.secondary{background:#fff;color:#795f73;border:1px solid var(--line);box-shadow:none}
+.row{display:flex;gap:10px}.row>*{flex:1}
+label{display:block;font-size:12px;color:#817481;margin:0 0 7px}
+input,textarea{width:100%;border:1px solid var(--line);border-radius:15px;background:#fff;padding:13px;color:var(--ink);outline:none}
+textarea{min-height:130px;resize:vertical}
+.field{margin-bottom:14px}
+nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,100%);padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line);display:flex;z-index:10}
+nav button{flex:1;background:none;color:#9a8c98;font-size:10px;padding:7px 2px}.navicon{font-size:20px;display:block;margin-bottom:2px}.nav-on{color:#9c6e91!important;font-weight:700}
+.list{display:flex;flex-direction:column;gap:10px}.note{padding:14px;border:1px solid var(--line);border-radius:17px;background:#fff}.note time{font-size:11px;color:#a08f9d}.note p{margin:6px 0 0;line-height:1.6;font-size:13px}
+.setup{position:fixed;inset:0;background:linear-gradient(180deg,#faedf5,#f6f1fa);z-index:30;padding:calc(35px + env(safe-area-inset-top)) 20px 30px;display:flex;align-items:center;justify-content:center}
+.setup-box{width:min(390px,100%);background:rgba(255,255,255,.92);border-radius:30px;padding:25px;box-shadow:var(--shadow)}
+.setup h2{font-size:25px;margin:0 0 8px}.setup p{color:var(--muted);font-size:13px;line-height:1.7}
+.hidden{display:none!important}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#514650;color:white;padding:10px 15px;border-radius:999px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;z-index:40}.toast.show{opacity:1}
+.fav{color:#c56b9b;font-size:22px;float:right;background:none}
+</style>
+</head>
+<body>
+<div id="setup" class="setup hidden">
+  <div class="setup-box">
+    <div class="logo">TODAY FOR YOU</div>
+    <h2>今日のあなたへ 🌸</h2>
+    <p>あなたの誕生日から星座と干支を読み取り、今日のメッセージをお届けします。占いは気軽な読み物として楽しんでくださいね。</p>
+    <div class="field"><label>ニックネーム</label><input id="sNick" placeholder="呼ばれたい名前"></div>
+    <div class="field"><label>生年月日</label><input id="sDob" type="date"></div>
+    <button class="btn" onclick="saveSetup()">はじめる</button>
+  </div>
+</div>
+
+<main class="app">
+<header><div class="logo">TODAY FOR YOU</div><h1>今日のあなたへ</h1><div class="sub">毎日に、ほんの少しの光を。</div></header>
+
+<section id="home" class="view active">
+  <div class="card hero">
+    <div class="greeting" id="hello"></div>
+    <div class="message" id="homeMsg"></div>
+    <div class="badges"><span class="badge" id="zBadge"></span><span class="badge" id="eBadge"></span></div>
+  </div>
+  <div class="section-title">今日の運勢</div>
+  <div class="grid" id="homeGrid"></div>
+  <div class="card">
+    <div class="section-title">🍀 今日のラッキーポイント</div>
+    <div id="lucky"></div>
+  </div>
+  <button class="btn" onclick="showView('fortune')">今日をもっと見る ✨</button>
+</section>
+
+<section id="fortune" class="view">
+  <div class="card hero"><div class="section-title">🔮 あなた専用の今日の運勢</div><div class="message" id="fortuneMsg"></div><p class="small" id="fortuneDate"></p></div>
+  <div class="grid" id="fortuneGrid"></div>
+  <div class="card"><div class="section-title">✨ 今日のアクション</div><p id="actionText"></p></div>
+  <div class="card"><div class="section-title">🎨 ラッキーカラー</div><p id="colorText"></p><div class="section-title">🧭 ラッキーな方向</div><p id="dirText"></p></div>
+  <button class="btn secondary" onclick="favoriteToday()">♡ 今日のメッセージをお気に入り</button>
+</section>
+
+<section id="diary" class="view">
+  <div class="card"><div class="section-title">📖 今日のひとこと</div><p class="small">うれしかったこと、疲れたこと、小さな発見。自由に残しておきましょう。</p><textarea id="diaryText" placeholder="今日はどんな一日だった？"></textarea><button class="btn" style="margin-top:10px" onclick="saveDiary()">保存する</button></div>
+  <div class="section-title">これまでの日記</div><div id="diaryList" class="list"></div>
+</section>
+
+<section id="favorites" class="view">
+  <div class="card"><div class="section-title">❤️ お気に入り</div><p class="small">残しておきたい言葉をここに集められます。</p></div>
+  <div id="favList" class="list"></div>
+</section>
+
+<section id="settings" class="view">
+  <div class="card"><div class="section-title">⚙️ あなたの設定</div>
+    <div class="field"><label>ニックネーム</label><input id="setNick"></div>
+    <div class="field"><label>生年月日</label><input id="setDob" type="date"></div>
+    <button class="btn" onclick="updateProfile()">保存する</button>
+  </div>
+  <div class="card"><div class="section-title">このアプリについて</div><p class="small">「今日のあなたへ」は、誕生日をもとにした星座・干支と、毎日のメッセージを楽しむための小さなWebアプリです。占いの内容は娯楽としてお楽しみください。</p><button class="btn secondary" onclick="resetApp()">最初から設定し直す</button></div>
+</section>
+</main>
+
+<nav>
+<button id="n-home" class="nav-on" onclick="showView('home')"><span class="navicon">🌸</span>ホーム</button>
+<button id="n-fortune" onclick="showView('fortune')"><span class="navicon">🔮</span>占い</button>
+<button id="n-diary" onclick="showView('diary')"><span class="navicon">📖</span>日記</button>
+<button id="n-favorites" onclick="showView('favorites')"><span class="navicon">❤️</span>お気に入り</button>
+<button id="n-settings" onclick="showView('settings')"><span class="navicon">⚙️</span>設定</button>
+</nav>
+<div id="toast" class="toast"></div>
+
+<script>
+const KEY='todayForYouV4';
+const zodiac=[['山羊座',1,19],['水瓶座',2,18],['魚座',3,20],['牡羊座',4,19],['牡牛座',5,20],['双子座',6,20],['蟹座',7,22],['獅子座',8,22],['乙女座',9,22],['天秤座',10,22],['蠍座',11,22],['射手座',12,21],['山羊座',12,31]];
+const eto=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const msgs=['焦らなくて大丈夫。小さな一歩が、明日の自分を助けてくれます。','今日は「これでいい」と思えることを一つ選んで。心が少し軽くなります。','あなたの感覚を大切に。人と比べず、自分のペースで進みましょう。','うれしいことは、思ったより近くにあります。小さな幸せを見つけてみて。','今日は整える日。ひとつ片づけるだけでも、気持ちに新しい風が入ります。','頑張りすぎなくて大丈夫。休むことも、前に進むことのひとつです。'];
+const actions=['お気に入りの飲み物をゆっくり味わう','5分だけ身の回りを整える','空を見上げて深呼吸する','気になっていた人に短いメッセージを送る','今日できたことを3つ数える','好きな音楽を1曲だけ聴く'];
+const colors=['ローズピンク','ラベンダー','アイボリー','ミントグリーン','空色','シャンパンゴールド'];
+const dirs=['東','南東','南','西南西','西','北西'];
+
+function getData(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+function saveData(d){localStorage.setItem(KEY,JSON.stringify(d))}
+function zodiacOf(date){let m=date.getMonth()+1,d=date.getDate(); for(let i=0;i<zodiac.length-1;i++){let [n,mm,dd]=zodiac[i];if((m===mm&&d>=dd)||(m===mm-1&&d<=dd))return n}return '山羊座'}
+function etoOf(date){return eto[(date.getFullYear()-4)%12]}
+function seed(){let d=getData(), today=new Date(), dob=d.dob||'2000-01-01';let s=dob.replaceAll('-','')+today.getFullYear()+''+(today.getMonth()+1)+''+today.getDate();let n=0;for(let i=0;i<s.length;i++)n=(n*31+s.charCodeAt(i))%997;return n}
+function fortune(){
+ let n=seed();let msg=msgs[n%msgs.length], a=actions[n%actions.length], c=colors[n%colors.length], dir=dirs[n%dirs.length];
+ let vals=[62+(n%38),58+((n*3)%43),61+((n*5)%39),60+((n*7)%40)];
+ return {msg,a,c,dir,vals};
+}
+function setupIfNeeded(){let d=getData(); if(!d.dob){document.getElementById('setup').classList.remove('hidden')} else render()}
+function saveSetup(){let nick=document.getElementById('sNick').value.trim()||'あなた';let dob=document.getElementById('sDob').value;if(!dob){alert('生年月日を入力してください');return}saveData({nick,dob,diary:[],favs:[]});document.getElementById('setup').classList.add('hidden');render();toast('ようこそ、'+nick+'さん 🌸')}
+function render(){
+ let d=getData(), birth=new Date(d.dob+'T12:00:00'), f=fortune(), z=zodiacOf(birth), e=etoOf(birth);
+ document.getElementById('hello').textContent='こんにちは、'+(d.nick||'あなた')+'さん';
+ document.getElementById('homeMsg').textContent=f.msg;
+ document.getElementById('zBadge').textContent='♈ '+z;
+ document.getElementById('eBadge').textContent='🐾 '+e+'年';
+ document.getElementById('homeGrid').innerHTML=cards(f.vals);
+ document.getElementById('fortuneGrid').innerHTML=cards(f.vals);
+ document.getElementById('fortuneMsg').textContent=f.msg;
+ document.getElementById('fortuneDate').textContent=new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'})+' のメッセージ';
+ document.getElementById('actionText').textContent=f.a;
+ document.getElementById('colorText').textContent=f.c;
+ document.getElementById('dirText').textContent=f.dir;
+ document.getElementById('lucky').textContent=f.c+'を身につける・目にするものに取り入れてみて。';
+ document.getElementById('setNick').value=d.nick||'';
+ document.getElementById('setDob').value=d.dob||'';
+ renderDiary();renderFavs();
+}
+function cards(v){return `<div class="tile"><span>💕 恋愛</span><b>${v[0]}点</b><span>${v[0]>=85?'心が通じやすい日':'自分を大切にすると◎'}</span></div><div class="tile"><span>💰 お金</span><b>${v[1]}点</b><span>${v[1]>=85?'小さな得に注目':'無理な買い物は控えて'}</span></div><div class="tile"><span>🌿 心</span><b>${v[2]}点</b><span>${v[2]>=85?'気持ちが軽くなりそう':'ゆっくり休もう'}</span></div><div class="tile"><span>✨ 行動</span><b>${v[3]}点</b><span>${v[3]>=85?'一歩踏み出して':'小さく始めてOK'}</span></div>`}
+function showView(id){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('nav-on'));document.getElementById('n-'+id).classList.add('nav-on');window.scrollTo(0,0)}
+function saveDiary(){let t=document.getElementById('diaryText').value.trim();if(!t){alert('ひとこと書いてみてください');return}let d=getData();d.diary=d.diary||[];d.diary.unshift({date:new Date().toLocaleString('ja-JP'),text:t});d.diary=d.diary.slice(0,50);saveData(d);document.getElementById('diaryText').value='';renderDiary();toast('日記を保存しました 📖')}
+function renderDiary(){let d=getData();let list=d.diary||[];document.getElementById('diaryList').innerHTML=list.length?list.map(x=>`<div class="note"><time>${x.date}</time><p>${escapeHtml(x.text)}</p></div>`).join(''):'<div class="card"><p class="small">まだ日記はありません。</p></div>'}
+function favoriteToday(){let d=getData(),f=fortune();d.favs=d.favs||[];let today=new Date().toLocaleDateString('ja-JP');if(!d.favs.some(x=>x.date===today)){d.favs.unshift({date:today,text:f.msg});saveData(d);renderFavs();toast('お気に入りに保存しました ❤️')}else toast('今日はすでに保存しています')}
+function renderFavs(){let d=getData();let list=d.favs||[];document.getElementById('favList').innerHTML=list.length?list.map((x,i)=>`<div class="note"><button class="fav" onclick="delFav(${i})">♥</button><time>${x.date}</time><p>${escapeHtml(x.text)}</p></div>`).join(''):'<div class="card"><p class="small">お気に入りはまだありません。</p></div>'}
+function delFav(i){let d=getData();d.favs.splice(i,1);saveData(d);renderFavs()}
+function updateProfile(){let d=getData();d.nick=document.getElementById('setNick').value.trim()||'あなた';d.dob=document.getElementById('setDob').value;if(!d.dob){alert('生年月日を入力してください');return}saveData(d);render();toast('設定を保存しました')}
+function resetApp(){if(confirm('設定と日記・お気に入りをすべて消しますか？')){localStorage.removeItem(KEY);location.reload()}}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function toast(s){let x=document.getElementById('toast');x.textContent=s;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1800)}
+setupIfNeeded();
+</script>
+</body>
+</html>
