@@ -7,9 +7,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="今日のあなたへ">
 <meta name="theme-color" content="#fff8fc">
-<link rel="apple-touch-icon" sizes="180x180" href="D8CE27E0-A8F6-4F94-A3F8-130ACE1A63EF.png">
-<link rel="icon" type="image/png" href="D8CE27E0-A8F6-4F94-A3F8-130ACE1A63EF.png">
-
 <title>今日のあなたへ</title>
 <style>
 :root{--ink:#403640;--muted:#8c7d88;--pink:#e564a2;--lav:#9f83dc;--line:#efdde7;--bg:#fff9fc}
@@ -31,6 +28,39 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:17px;paddin
 nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.97);border-top:1px solid var(--line);padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:20;backdrop-filter:blur(12px)}
 nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}nav button b{display:block;font-size:25px;margin-bottom:3px}nav button.active{color:#df4c93;font-weight:700}
 .setup{position:fixed;inset:0;background:linear-gradient(180deg,#fff9fc,#f3e9f6);z-index:30;display:none;align-items:center;padding:24px}.setup .card{margin:auto;width:100%;max-width:430px}
+
+/* diary history + photo */
+.diary-date-row{display:flex;gap:10px;align-items:center;margin-top:10px}
+.diary-date-row input[type="date"]{flex:1}
+.photo-picker{margin-top:14px}
+.photo-picker-label{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 14px;border-radius:16px;
+  background:#fff1f6;border:1px solid #f2cad8;font-weight:700;cursor:pointer
+}
+.photo-picker input{display:none}
+.photo-preview{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.photo-preview:empty{display:none}
+.photo-thumb{position:relative;border-radius:18px;overflow:hidden;background:#f8f1f4;aspect-ratio:1/1}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-remove{
+  position:absolute;top:7px;right:7px;width:30px;height:30px;border:0;border-radius:50%;
+  background:rgba(255,255,255,.9);font-size:18px;line-height:30px
+}
+.diary-history-title{font-size:18px;font-weight:800;margin:0 0 12px}
+.diary-entry{padding:14px 0;border-top:1px solid rgba(80,50,65,.12)}
+.diary-entry:first-child{border-top:0;padding-top:0}
+.diary-entry-date{font-weight:800;margin-bottom:6px}
+.diary-entry-text{white-space:pre-wrap;line-height:1.7;color:#4a4145}
+.diary-entry-photos{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.diary-entry-photos img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px}
+.diary-entry-actions{display:flex;gap:8px;margin-top:10px}
+.diary-small-btn{
+  border:1px solid #e5c4d0;background:#fff7fa;padding:8px 11px;border-radius:12px;
+  font-size:13px;font-weight:700
+}
+.diary-small-btn.danger{color:#a64c63}
+.diary-empty{color:#8c7c83;line-height:1.7}
+
 </style>
 </head>
 <body>
@@ -76,7 +106,30 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 
 <section id="diary" class="page">
 <header><div class="eyebrow">TODAY FOR YOU</div><div class="title">日記</div></header>
-<div class="card"><div id="today" class="muted"></div><textarea id="diaryText" placeholder="今日の出来事・感じたこと…" style="margin-top:12px"></textarea><button class="btn" style="margin-top:12px" onclick="saveDiary()">保存</button><p id="saved" class="muted"></p></div>
+
+<div class="card">
+  <div class="muted">日付を選んで、その日の思い出を残せます。</div>
+  <div class="diary-date-row">
+    <input id="diaryDate" type="date" onchange="loadDiaryForDate(this.value)">
+  </div>
+  <textarea id="diaryText" placeholder="今日の出来事・感じたこと…" style="margin-top:12px"></textarea>
+
+  <div class="photo-picker">
+    <label class="photo-picker-label">📷 写真を追加（2枚まで）
+      <input id="diaryPhotos" type="file" accept="image/*" multiple onchange="addDiaryPhotos(event)">
+    </label>
+    <div id="photoPreview" class="photo-preview"></div>
+    <p class="muted" style="margin-top:8px">写真は少し小さくして、このiPhoneの中に保存します。</p>
+  </div>
+
+  <button class="btn" style="margin-top:12px" onclick="saveDiary()">保存</button>
+  <p id="saved" class="muted"></p>
+</div>
+
+<div class="card">
+  <div class="diary-history-title">🌸 過去の日記</div>
+  <div id="diaryHistory"></div>
+</div>
 </section>
 
 <section id="mypage" class="page">
@@ -119,13 +172,183 @@ function render(){
  fortuneText.textContent=M[1]+" "+["今日は整えることを優先して。","小さく始めると流れが良くなります。","自分の感覚を大切に。"][k%3];
  luckyColor.textContent="🎨 "+["ピンク","アイボリー","ラベンダー","グリーン","ゴールド"][k%5];
  luckyDir.textContent="🧭 "+["東","南東","南","西","北西"][(k+2)%5];
- today.textContent=new Date().toLocaleDateString("ja-JP");diaryText.value=localStorage.getItem("diary-"+today.textContent)||"";
+ initDiary();
  profileName.textContent=p.name+" さん";profileInfo.textContent=z+"　"+e;showFavs()
 }
-function saveDiary(){localStorage.setItem("diary-"+today.textContent,diaryText.value);saved.textContent="保存しました 🌸"}
+
+let diaryPhotoData=[];
+
+function pad2(n){return String(n).padStart(2,"0")}
+function todayISO(){
+  const d=new Date();
+  return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
+}
+function isoToLegacyLabel(iso){
+  const [y,m,d]=iso.split("-").map(Number);
+  return y+"/"+m+"/"+d;
+}
+function prettyDiaryDate(iso){
+  if(!iso)return "";
+  const [y,m,d]=iso.split("-").map(Number);
+  return y+"年"+m+"月"+d+"日";
+}
+function diaryTextKey(iso){return "diary-"+isoToLegacyLabel(iso)}
+function diaryMediaKey(iso){return "tfyDiaryMedia-"+iso}
+
+function initDiary(){
+  const iso=todayISO();
+  diaryDate.value=iso;
+  loadDiaryForDate(iso);
+  renderDiaryHistory();
+}
+
+function getDiaryPhotos(iso){
+  try{
+    const obj=JSON.parse(localStorage.getItem(diaryMediaKey(iso))||'{"photos":[]}');
+    return Array.isArray(obj.photos)?obj.photos:[];
+  }catch(e){return []}
+}
+
+function loadDiaryForDate(iso){
+  if(!iso)return;
+  diaryDate.value=iso;
+  diaryText.value=localStorage.getItem(diaryTextKey(iso))||"";
+  diaryPhotoData=getDiaryPhotos(iso);
+  saved.textContent="";
+  renderPhotoPreview();
+}
+
+function renderPhotoPreview(){
+  photoPreview.innerHTML=diaryPhotoData.map((src,i)=>
+    `<div class="photo-thumb"><img src="${src}" alt="日記の写真 ${i+1}"><button class="photo-remove" type="button" onclick="removeDiaryPhoto(${i})">×</button></div>`
+  ).join("");
+}
+
+function removeDiaryPhoto(i){
+  diaryPhotoData.splice(i,1);
+  renderPhotoPreview();
+}
+
+function addDiaryPhotos(event){
+  const files=[...event.target.files];
+  event.target.value="";
+  if(!files.length)return;
+  const slots=2-diaryPhotoData.length;
+  if(slots<=0){alert("写真は1日2枚までです。");return}
+  files.slice(0,slots).forEach(file=>compressDiaryPhoto(file).then(data=>{
+    if(diaryPhotoData.length<2){
+      diaryPhotoData.push(data);
+      renderPhotoPreview();
+    }
+  }).catch(()=>alert("写真を読み込めませんでした。別の写真でお試しください。")));
+  if(files.length>slots) alert("写真は1日2枚までなので、先頭の"+slots+"枚を追加します。");
+}
+
+function compressDiaryPhoto(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=reject;
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=reject;
+      img.onload=()=>{
+        const maxSide=1100;
+        let w=img.width,h=img.height;
+        const scale=Math.min(1,maxSide/Math.max(w,h));
+        w=Math.round(w*scale);h=Math.round(h*scale);
+        const canvas=document.createElement("canvas");
+        canvas.width=w;canvas.height=h;
+        const ctx=canvas.getContext("2d");
+        ctx.drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL("image/jpeg",0.70));
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function saveDiary(){
+  const iso=diaryDate.value||todayISO();
+  try{
+    const text=diaryText.value;
+    if(text.trim()) localStorage.setItem(diaryTextKey(iso),text);
+    else localStorage.removeItem(diaryTextKey(iso));
+
+    if(diaryPhotoData.length){
+      localStorage.setItem(diaryMediaKey(iso),JSON.stringify({photos:diaryPhotoData}));
+    }else{
+      localStorage.removeItem(diaryMediaKey(iso));
+    }
+    saved.textContent="保存しました 🌸";
+    renderDiaryHistory();
+  }catch(e){
+    saved.textContent="保存容量がいっぱいの可能性があります。写真を1枚減らしてお試しください。";
+  }
+}
+
+function collectDiaryDates(){
+  const dates=new Set();
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith("diary-")){
+      const label=k.slice(6);
+      const m=label.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+      if(m) dates.add(m[1]+"-"+pad2(m[2])+"-"+pad2(m[3]));
+    }
+    if(k&&k.startsWith("tfyDiaryMedia-")){
+      const iso=k.slice("tfyDiaryMedia-".length);
+      if(/^\d{4}-\d{2}-\d{2}$/.test(iso)) dates.add(iso);
+    }
+  }
+  return [...dates].filter(iso=>{
+    const text=(localStorage.getItem(diaryTextKey(iso))||"").trim();
+    return text || getDiaryPhotos(iso).length;
+  }).sort((a,b)=>b.localeCompare(a));
+}
+
+function escHtml(str){
+  return String(str).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+
+function renderDiaryHistory(){
+  const dates=collectDiaryDates();
+  if(!dates.length){
+    diaryHistory.innerHTML='<div class="diary-empty">まだ日記はありません。<br>今日の出来事を残してみましょう。</div>';
+    return;
+  }
+  diaryHistory.innerHTML=dates.map(iso=>{
+    const text=localStorage.getItem(diaryTextKey(iso))||"";
+    const photos=getDiaryPhotos(iso);
+    const short=text.length>140?text.slice(0,140)+"…":text;
+    return `<div class="diary-entry">
+      <div class="diary-entry-date">${prettyDiaryDate(iso)}</div>
+      ${short?`<div class="diary-entry-text">${escHtml(short)}</div>`:""}
+      ${photos.length?`<div class="diary-entry-photos">${photos.map(p=>`<img src="${p}" alt="${prettyDiaryDate(iso)}の写真">`).join("")}</div>`:""}
+      <div class="diary-entry-actions">
+        <button class="diary-small-btn" type="button" onclick="openDiaryEntry('${iso}')">この日を開く</button>
+        <button class="diary-small-btn danger" type="button" onclick="deleteDiaryEntry('${iso}')">削除</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function openDiaryEntry(iso){
+  loadDiaryForDate(iso);
+  document.getElementById("diary").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function deleteDiaryEntry(iso){
+  if(!confirm(prettyDiaryDate(iso)+"の日記を削除しますか？"))return;
+  localStorage.removeItem(diaryTextKey(iso));
+  localStorage.removeItem(diaryMediaKey(iso));
+  if(diaryDate.value===iso) loadDiaryForDate(iso);
+  renderDiaryHistory();
+}
+
 function favorite(){let a=JSON.parse(localStorage.getItem("favorites")||"[]"),t=msg2.textContent;if(!a.includes(t))a.unshift(t);localStorage.setItem("favorites",JSON.stringify(a.slice(0,20)));showFavs()}
 function showFavs(){let a=JSON.parse(localStorage.getItem("favorites")||"[]");favList.innerHTML=a.length?a.map(x=>"♡ "+x).join("<br><br>"):"まだありません。"}
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");scrollTo(0,0)})
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(b.dataset.page==="diary")renderDiaryHistory();scrollTo(0,0)})
 render();
 </script>
 </body></html>
