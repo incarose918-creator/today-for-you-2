@@ -72,6 +72,35 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 .home-photo-label input{display:none}
 .home-photo-note{margin-top:8px}
 
+
+/* public-app information pages */
+.info-list{margin-top:10px}
+.info-link{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px 2px;border:0;border-top:1px solid rgba(80,50,65,.12);
+  background:transparent;color:inherit;text-align:left;font:inherit
+}
+.info-link:first-child{border-top:0}
+.info-link strong{font-size:16px}
+.info-link span{color:#9b8791;font-size:20px}
+.legal-wrap{padding:0 16px 110px}
+.legal-card{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;
+  padding:20px;margin:14px 0;box-shadow:0 7px 24px rgba(115,70,105,.06)
+}
+.legal-card h2{font-size:25px;margin:0 0 12px}
+.legal-card h3{font-size:18px;margin:22px 0 8px}
+.legal-card p,.legal-card li{line-height:1.8}
+.legal-card ul{padding-left:1.3em}
+.legal-back{
+  border:0;background:#fff1f6;border:1px solid #f0d1dd;border-radius:16px;
+  padding:10px 14px;font-weight:700;color:#6f5362
+}
+.version-chip{
+  display:inline-block;margin-top:8px;padding:7px 11px;border-radius:999px;
+  background:#fff1f6;color:#80636f;font-size:13px
+}
+
 </style>
 </head>
 <body>
@@ -160,9 +189,111 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
     </div>
     <p id="homePhotoStatus" class="muted home-photo-note"></p>
   </div>
+
+<div class="card">
+  <h3 style="margin:0 0 8px">ℹ️ このアプリについて</h3>
+  <div class="info-list">
+    <button class="info-link" type="button" onclick="openInfoPage('aboutApp')">
+      <strong>今日のあなたへについて</strong><span>›</span>
+    </button>
+    <button class="info-link" type="button" onclick="openInfoPage('privacyPolicy')">
+      <strong>プライバシーポリシー</strong><span>›</span>
+    </button>
+    <button class="info-link" type="button" onclick="openInfoPage('dataInfo')">
+      <strong>データの保存について</strong><span>›</span>
+    </button>
+    <button class="info-link" type="button" onclick="openInfoPage('contactInfo')">
+      <strong>お問い合わせ</strong><span>›</span>
+    </button>
+  </div>
+  <span class="version-chip">Version 1.0</span>
+</div>
+
 </div>
 </section>
 </div>
+
+
+<section id="aboutApp" class="page">
+<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">このアプリについて</div></header>
+<div class="legal-wrap">
+  <button class="legal-back" type="button" onclick="backToMyPage()">‹ マイページへ戻る</button>
+  <div class="legal-card">
+    <h2>今日のあなたへ 🌸</h2>
+    <p>「今日のあなたへ」は、毎日にほんの少しの光を届けることを目指した、メッセージ・占い・日記のWebアプリです。</p>
+    <p>星座や干支を使った今日のメッセージ、日記、写真、お気に入り、ホーム写真のカスタマイズなどを楽しめます。</p>
+    <h3>占いについて</h3>
+    <p>本アプリの占い、メッセージ、ラッキー情報は娯楽・セルフリフレクションを目的としています。医療、法律、投資などの専門的な判断を代替するものではありません。</p>
+    <span class="version-chip">Version 1.0</span>
+  </div>
+</div>
+</section>
+
+<section id="privacyPolicy" class="page">
+<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">プライバシーポリシー</div></header>
+<div class="legal-wrap">
+  <button class="legal-back" type="button" onclick="backToMyPage()">‹ マイページへ戻る</button>
+  <div class="legal-card">
+    <h2>プライバシーポリシー</h2>
+    <p>「今日のあなたへ」は、利用者のプライバシーを大切にします。</p>
+
+    <h3>1. 取得・保存する情報</h3>
+    <p>本アプリでは、ニックネーム、生年月日、日記の文章、お気に入り、利用者が選択した写真などを、アプリの機能を提供するために利用する場合があります。</p>
+
+    <h3>2. 端末内での保存</h3>
+    <p>現在のWebアプリ版では、日記、写真、ニックネーム、生年月日などは原則として利用者の端末・ブラウザ内に保存されます。アプリ運営者が日記の内容や選択した写真を収集することを目的としていません。</p>
+
+    <h3>3. 写真について</h3>
+    <p>利用者が自分で選択した写真を、ホーム画面や日記に使用できます。写真は利用者自身の操作によって選択されます。</p>
+
+    <h3>4. 生年月日について</h3>
+    <p>生年月日は、星座・干支などの表示や、毎日のコンテンツを表示するために利用します。</p>
+
+    <h3>5. 第三者への提供</h3>
+    <p>本アプリは、利用者の日記、写真、生年月日などの情報を、本人の同意なく第三者へ販売することを目的としていません。</p>
+
+    <h3>6. データの削除</h3>
+    <p>端末内に保存された情報は、アプリ内の削除機能や、ブラウザのサイトデータ削除などによって削除できます。</p>
+
+    <h3>7. 本ポリシーの変更</h3>
+    <p>機能追加や公開形態の変更に伴い、本プライバシーポリシーを変更する場合があります。</p>
+
+    <h3>8. お問い合わせ</h3>
+    <p>正式公開時に、問い合わせ先を本アプリ内に掲載します。</p>
+
+    <p class="muted">制定日：2026年9月14日</p>
+  </div>
+</div>
+</section>
+
+<section id="dataInfo" class="page">
+<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">データの保存について</div></header>
+<div class="legal-wrap">
+  <button class="legal-back" type="button" onclick="backToMyPage()">‹ マイページへ戻る</button>
+  <div class="legal-card">
+    <h2>端末内保存について</h2>
+    <ul>
+      <li>日記や写真などは、現在は主にこの端末のブラウザ内に保存されます。</li>
+      <li>別のスマートフォンや別のブラウザには、自動では引き継がれません。</li>
+      <li>ブラウザのサイトデータを削除すると、保存した内容が消える場合があります。</li>
+      <li>日記写真は保存容量を使うため、写真枚数やサイズによっては保存できなくなる場合があります。</li>
+    </ul>
+    <p>大切な内容は、必要に応じて別の場所にも控えておくことをおすすめします。</p>
+  </div>
+</div>
+</section>
+
+<section id="contactInfo" class="page">
+<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">お問い合わせ</div></header>
+<div class="legal-wrap">
+  <button class="legal-back" type="button" onclick="backToMyPage()">‹ マイページへ戻る</button>
+  <div class="legal-card">
+    <h2>お問い合わせ</h2>
+    <p>「今日のあなたへ」に関するご意見・不具合・ご要望などのお問い合わせ先は、正式公開時にこちらへ掲載します。</p>
+    <p class="muted">現在は公開準備中です。</p>
+  </div>
+</div>
+</section>
 
 <nav>
 <button class="active" data-page="home"><b>🌸</b>ホーム</button>
@@ -418,6 +549,22 @@ function resetHomePhoto(){
   const fi=key()%flowers.length;
   dailyFlower.src=flowers[fi];
   if(typeof homePhotoStatus!=="undefined") homePhotoStatus.textContent="おまかせの花に戻しました 🌸";
+}
+
+
+function openInfoPage(id){
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+  const page=document.getElementById(id);
+  if(page) page.classList.add("active");
+  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+  scrollTo(0,0);
+}
+
+function backToMyPage(){
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+  document.getElementById("mypage").classList.add("active");
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page==="mypage"));
+  scrollTo(0,0);
 }
 
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(b.dataset.page==="diary")renderDiaryHistory();scrollTo(0,0)})
