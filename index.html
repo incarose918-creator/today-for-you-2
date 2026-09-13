@@ -101,6 +101,11 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
   background:#fff1f6;color:#80636f;font-size:13px
 }
 
+
+/* information-page scroll position fix */
+#aboutApp,#privacyPolicy,#dataInfo,#contactInfo{min-height:100vh}
+#aboutApp>header,#privacyPolicy>header,#dataInfo>header,#contactInfo>header{margin-top:0}
+
 </style>
 </head>
 <body>
@@ -552,22 +557,38 @@ function resetHomePhoto(){
 }
 
 
+function resetPageScroll(){
+  document.documentElement.scrollTop=0;
+  document.body.scrollTop=0;
+  window.scrollTo(0,0);
+  requestAnimationFrame(()=>{
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
+    window.scrollTo(0,0);
+  });
+  setTimeout(()=>{
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
+    window.scrollTo(0,0);
+  },40);
+}
+
 function openInfoPage(id){
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
   const page=document.getElementById(id);
   if(page) page.classList.add("active");
   document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
-  scrollTo(0,0);
+  resetPageScroll();
 }
 
 function backToMyPage(){
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
   document.getElementById("mypage").classList.add("active");
   document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page==="mypage"));
-  scrollTo(0,0);
+  resetPageScroll();
 }
 
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(b.dataset.page==="diary")renderDiaryHistory();scrollTo(0,0)})
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(b.dataset.page==="diary")renderDiaryHistory();resetPageScroll()})
 render();
 </script>
 </body></html>
