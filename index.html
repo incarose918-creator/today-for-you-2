@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="今日のあなたへ">
 <meta name="theme-color" content="#fff8fc">
 <title>今日のあなたへ</title>
+<link rel="apple-touch-icon" sizes="180x180" href="D8CE27E0-A8F6-4F94-A3F8-130ACE1A63EF.png?v=3">
 <style>
 :root{--ink:#403640;--muted:#8c7d88;--pink:#e564a2;--lav:#9f83dc;--line:#efdde7;--bg:#fff9fc}
 *{box-sizing:border-box} html,body{margin:0;background:#f8f2f7;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}
@@ -27,8 +28,6 @@ textarea,input{width:100%;border:1px solid var(--line);border-radius:17px;paddin
 .btn{width:100%;border:0;border-radius:18px;padding:14px;background:linear-gradient(90deg,var(--pink),var(--lav));color:white;font-weight:700}
 nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.97);border-top:1px solid var(--line);padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:20;backdrop-filter:blur(12px)}
 nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}nav button b{display:block;font-size:25px;margin-bottom:3px}nav button.active{color:#df4c93;font-weight:700}
-.setup{position:fixed;inset:0;background:linear-gradient(180deg,#fff9fc,#f3e9f6);z-index:30;display:none;align-items:center;padding:24px}.setup .card{margin:auto;width:100%;max-width:430px}
-
 /* diary history + photo */
 .diary-date-row{display:flex;gap:10px;align-items:center;margin-top:10px}
 .diary-date-row input[type="date"]{flex:1}
@@ -186,12 +185,6 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
     </div>
   </div>
 </div>
-
-<div id="setup" class="setup"><div class="card">
-<div class="eyebrow">TODAY FOR YOU</div><div class="title">今日のあなたへ</div><p class="muted">ニックネームと生年月日を入力してください。</p>
-<input id="nameInput" placeholder="ニックネーム"><input id="birthInput" type="date" style="margin-top:10px">
-<button class="btn" style="margin-top:12px" onclick="saveSetup()">はじめる</button>
-</div></div>
 
 <div class="app">
 <section id="home" class="page active">
@@ -400,9 +393,9 @@ function zodiac(m,d){const n=m*100+d;if(n>=321&&n<=419)return"♈ 牡羊座";if(
 function eto(y){const a=["🐀 子年","🐂 丑年","🐅 寅年","🐇 卯年","🐉 辰年","🐍 巳年","🐎 午年","🐑 未年","🐒 申年","🐓 酉年","🐕 戌年","🐗 亥年"];return a[((y-4)%12+12)%12]}
 function profile(){return JSON.parse(localStorage.getItem("tfyProfile")||"null")}
 function saveSetup(){let n=nameInput.value.trim(),b=birthInput.value;if(!b)return alert("生年月日を入力してください");localStorage.setItem("tfyProfile",JSON.stringify({name:n||"あなた",birth:b}));setup.style.display="none";render()}
-function resetSetup(){localStorage.removeItem("tfyProfile");location.reload()}
+function resetSetup(){localStorage.removeItem("tfyProfile");localStorage.removeItem("tfy-profile");location.reload()}
 function render(){
- let p=profile();if(!p){setup.style.display="flex";return}
+ let p=profile();if(!p){return}
  let [y,m,d]=p.birth.split("-").map(Number),k=key(),M=messages[k%messages.length],fi=k%flowers.length;
  const customHomePhoto=localStorage.getItem("tfyCustomHomePhoto");dailyFlower.src=customHomePhoto||flowers[fi];messagePhoto.src=flowers[fi];
  msg.textContent=M[0];detail.textContent=M[1];msg2.textContent=M[0];
@@ -671,28 +664,48 @@ render();
 
 
 function showWelcomeIfNeeded(){
-  const raw=localStorage.getItem("tfy-profile");
+  // Migrate the temporary profile key used by the previous test version.
   let p=null;
-  try{p=raw?JSON.parse(raw):null}catch(e){}
+  try{p=JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){}
+  if(!p){
+    try{
+      const old=JSON.parse(localStorage.getItem("tfy-profile")||"null");
+      if(old && old.name && old.birth){
+        p=old;
+        localStorage.setItem("tfyProfile",JSON.stringify(old));
+        localStorage.removeItem("tfy-profile");
+      }
+    }catch(e){}
+  }
+
+  const w=document.getElementById("welcomeScreen");
   if(!p || !p.name || !p.birth){
-    const w=document.getElementById("welcomeScreen");
     if(w) w.classList.add("show");
+  }else{
+    if(w) w.classList.remove("show");
   }
 }
+
 function startWelcome(){
   const name=document.getElementById("welcomeName").value.trim();
   const birth=document.getElementById("welcomeBirth").value;
   const err=document.getElementById("welcomeError");
-  if(!name || !birth){ if(err) err.style.display="block"; return; }
+
+  if(!name || !birth){
+    if(err) err.style.display="block";
+    return;
+  }
+
   if(err) err.style.display="none";
-  localStorage.setItem("tfy-profile",JSON.stringify({name:name,birth:birth}));
-  const n=document.getElementById("nickname");
-  const b=document.getElementById("birth");
-  if(n)n.value=name;
-  if(b)b.value=birth;
+
+  // Use the same profile key as the rest of the app.
+  localStorage.setItem("tfyProfile",JSON.stringify({name:name,birth:birth}));
+  localStorage.removeItem("tfy-profile");
+
   const w=document.getElementById("welcomeScreen");
-  if(w)w.classList.remove("show");
-  if(typeof render==="function")render();
+  if(w) w.classList.remove("show");
+
+  if(typeof render==="function") render();
   window.scrollTo(0,0);
 }
 
