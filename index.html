@@ -133,9 +133,60 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
   padding-top:24px;
 }
 
+
+/* first-launch welcome */
+#welcomeScreen{
+  position:fixed;inset:0;z-index:1000;display:none;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  background:linear-gradient(180deg,#fffafd 0%,#faeef6 100%);
+  padding:calc(env(safe-area-inset-top) + 34px) 22px calc(env(safe-area-inset-bottom) + 34px);
+}
+#welcomeScreen.show{display:block}
+.welcome-inner{max-width:390px;margin:0 auto;text-align:center}
+.welcome-mark{font-size:54px;margin:12px 0 10px}
+.welcome-eyebrow{letter-spacing:.28em;color:#c674a0;font-size:13px;font-weight:700}
+.welcome-title{font-size:31px;line-height:1.35;margin:12px 0 8px;color:#40353d}
+.welcome-copy{line-height:1.8;color:#806f79;margin:0 0 22px}
+.welcome-card{
+  background:rgba(255,255,255,.94);border:1px solid #f0d4e1;border-radius:28px;
+  padding:22px;text-align:left;box-shadow:0 10px 30px rgba(116,70,100,.07)
+}
+.welcome-card label{display:block;font-weight:700;margin:14px 0 7px}
+.welcome-card input{
+  width:100%;box-sizing:border-box;border:1px solid #ead2dd;border-radius:16px;
+  padding:14px;font-size:16px;background:#fff;color:#40353d
+}
+.welcome-start{
+  width:100%;margin-top:22px;border:0;border-radius:18px;padding:15px 18px;
+  background:#d88db2;color:white;font-size:17px;font-weight:700
+}
+.welcome-note{text-align:center;font-size:12px;line-height:1.6;color:#9a8791;margin:14px 4px 0}
+.welcome-error{display:none;color:#b4536b;font-size:13px;margin-top:10px;text-align:center}
+
 </style>
 </head>
 <body>
+
+<div id="welcomeScreen" aria-label="初回設定">
+  <div class="welcome-inner">
+    <div class="welcome-eyebrow">TODAY FOR YOU</div>
+    <div class="welcome-mark">🌸</div>
+    <h1 class="welcome-title">「今日のあなたへ」へ<br>ようこそ</h1>
+    <p class="welcome-copy">毎日に、ほんの少しの光を。<br>あなたのための小さな時間を始めましょう。</p>
+    <div class="welcome-card">
+      <label for="welcomeName">ニックネーム</label>
+      <input id="welcomeName" type="text" maxlength="20" placeholder="例：えみ">
+
+      <label for="welcomeBirth">生年月日</label>
+      <input id="welcomeBirth" type="date">
+
+      <div id="welcomeError" class="welcome-error">ニックネームと生年月日を入力してください。</div>
+      <button class="welcome-start" type="button" onclick="startWelcome()">はじめる 🌸</button>
+      <p class="welcome-note">生年月日は星座・干支などの表示に使います。現在のWebアプリ版では、入力した情報は原則としてこの端末のブラウザ内に保存されます。</p>
+    </div>
+  </div>
+</div>
+
 <div id="setup" class="setup"><div class="card">
 <div class="eyebrow">TODAY FOR YOU</div><div class="title">今日のあなたへ</div><p class="muted">ニックネームと生年月日を入力してください。</p>
 <input id="nameInput" placeholder="ニックネーム"><input id="birthInput" type="date" style="margin-top:10px">
@@ -617,5 +668,35 @@ function backToMyPage(){
 
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(b.dataset.page==="diary")renderDiaryHistory();resetPageScroll()})
 render();
+
+
+function showWelcomeIfNeeded(){
+  const raw=localStorage.getItem("tfy-profile");
+  let p=null;
+  try{p=raw?JSON.parse(raw):null}catch(e){}
+  if(!p || !p.name || !p.birth){
+    const w=document.getElementById("welcomeScreen");
+    if(w) w.classList.add("show");
+  }
+}
+function startWelcome(){
+  const name=document.getElementById("welcomeName").value.trim();
+  const birth=document.getElementById("welcomeBirth").value;
+  const err=document.getElementById("welcomeError");
+  if(!name || !birth){ if(err) err.style.display="block"; return; }
+  if(err) err.style.display="none";
+  localStorage.setItem("tfy-profile",JSON.stringify({name:name,birth:birth}));
+  const n=document.getElementById("nickname");
+  const b=document.getElementById("birth");
+  if(n)n.value=name;
+  if(b)b.value=birth;
+  const w=document.getElementById("welcomeScreen");
+  if(w)w.classList.remove("show");
+  if(typeof render==="function")render();
+  window.scrollTo(0,0);
+}
+
+
+setTimeout(showWelcomeIfNeeded,80);
 </script>
 </body></html>
