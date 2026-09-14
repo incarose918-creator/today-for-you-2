@@ -162,9 +162,39 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 .welcome-note{text-align:center;font-size:12px;line-height:1.6;color:#9a8791;margin:14px 4px 0}
 .welcome-error{display:none;color:#b4536b;font-size:13px;margin-top:10px;text-align:center}
 
+
+/* diary PIN lock */
+.diary-lock-card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:26px;padding:20px;margin:14px 0;box-shadow:0 7px 24px rgba(115,70,105,.06)}
+.diary-lock-row{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:12px}
+.diary-lock-btn{border:1px solid #efcfdc;background:#fff1f6;color:#755565;border-radius:16px;padding:10px 14px;font-weight:700}
+.diary-lock-overlay{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,#fffafd 0%,#f8edf5 100%)}
+.diary-lock-overlay.show{display:flex}
+.diary-lock-box{width:min(100%,360px);background:#fff;border:1px solid #efd4e1;border-radius:28px;padding:26px 22px;text-align:center;box-shadow:0 16px 38px rgba(113,74,99,.12)}
+.pin-input{width:160px;text-align:center;letter-spacing:.35em;font-size:26px;font-weight:700;border:1px solid #e8cfd9;border-radius:16px;padding:12px;background:#fff}
+.pin-actions{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.pin-primary,.pin-secondary{border-radius:16px;padding:11px 16px;font-weight:700;border:0}
+.pin-primary{background:#d88db2;color:white}
+.pin-secondary{background:#f7eef3;color:#755565}
+.pin-error{display:none;color:#b4536b;font-size:13px;margin-top:10px}
+
 </style>
 </head>
 <body>
+
+<div id="diaryLockOverlay" class="diary-lock-overlay">
+  <div class="diary-lock-box">
+    <div style="font-size:42px">🔒</div>
+    <h2>日記はロックされています</h2>
+    <p class="muted">4桁の暗証番号を入力してください。</p>
+    <input id="diaryPinInput" class="pin-input" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
+    <div id="diaryPinError" class="pin-error">暗証番号が違います。</div>
+    <div class="pin-actions">
+      <button class="pin-secondary" type="button" onclick="closeDiaryLock()">戻る</button>
+      <button class="pin-primary" type="button" onclick="unlockDiary()">ロック解除</button>
+    </div>
+  </div>
+</div>
+
 
 <div id="welcomeScreen" aria-label="初回設定">
   <div class="welcome-inner">
@@ -265,6 +295,17 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
     </div>
     <p id="homePhotoStatus" class="muted home-photo-note"></p>
   </div>
+</div>
+
+
+<div class="card diary-lock-card">
+  <h3 style="margin:0 0 8px">🔒 日記ロック</h3>
+  <p class="muted" style="margin:0">日記を開くときに4桁の暗証番号を求めます。</p>
+  <div class="diary-lock-row">
+    <strong id="diaryLockStatusLabel">OFF</strong>
+    <button id="diaryLockToggleBtn" class="diary-lock-btn" type="button" onclick="toggleDiaryLock()">日記ロックを設定</button>
+  </div>
+  <p id="diaryLockStatusText" class="muted" style="margin:10px 0 0">現在、日記ロックは設定されていません。</p>
 </div>
 
 <div class="card">
@@ -711,5 +752,108 @@ function startWelcome(){
 
 
 setTimeout(showWelcomeIfNeeded,80);
+
+const DIARY_PIN_KEY="tfy-diary-pin";
+let diaryUnlockedForSession=false;
+
+function getDiaryPin(){return localStorage.getItem(DIARY_PIN_KEY)||""}
+function isDiaryLockEnabled(){return /^\d{4}$/.test(getDiaryPin())}
+function updateDiaryLockUI(){
+  const on=isDiaryLockEnabled();
+  const l=document.getElementById("diaryLockStatusLabel");
+  const b=document.getElementById("diaryLockToggleBtn");
+  const t=document.getElementById("diaryLockStatusText");
+  if(l)l.textContent=on?"ON":"OFF";
+  if(b)b.textContent=on?"ロック設定を変更":"日記ロックを設定";
+  if(t)t.textContent=on?"日記を開くときに暗証番号が必要です。":"現在、日記ロックは設定されていません。";
+}
+function toggleDiaryLock(){
+  const cur=getDiaryPin();
+  if(!cur){
+    const a=prompt("日記用の4桁の暗証番号を決めてください。");
+    if(a===null)return;
+    if(!/^\d{4}$/.test(a)){alert("数字4桁で入力してください。");return}
+    const b=prompt("確認のため、もう一度同じ4桁を入力してください。");
+    if(b===null)return;
+    if(a!==b){alert("暗証番号が一致しません。");return}
+    localStorage.setItem(DIARY_PIN_KEY,a);
+    diaryUnlockedForSession=false;
+    updateDiaryLockUI();
+    alert("日記ロックをONにしました。");
+    return;
+  }
+  const check=prompt("現在の暗証番号を入力してください。");
+  if(check===null)return;
+  if(check!==cur){alert("暗証番号が違います。");return}
+  const change=confirm("OK：暗証番号を変更\nキャンセル：ロックをOFF");
+  if(change){
+    const a=prompt("新しい4桁の暗証番号を入力してください。");
+    if(a===null)return;
+    if(!/^\d{4}$/.test(a)){alert("数字4桁で入力してください。");return}
+    const b=prompt("確認のため、もう一度入力してください。");
+    if(b===null)return;
+    if(a!==b){alert("暗証番号が一致しません。");return}
+    localStorage.setItem(DIARY_PIN_KEY,a);
+    diaryUnlockedForSession=false;
+    updateDiaryLockUI();
+    alert("暗証番号を変更しました。");
+  }else if(confirm("日記ロックをOFFにしますか？")){
+    localStorage.removeItem(DIARY_PIN_KEY);
+    diaryUnlockedForSession=false;
+    updateDiaryLockUI();
+    alert("日記ロックをOFFにしました。");
+  }
+}
+function openDiaryLock(){
+  const o=document.getElementById("diaryLockOverlay");
+  const i=document.getElementById("diaryPinInput");
+  const e=document.getElementById("diaryPinError");
+  if(e)e.style.display="none";
+  if(i)i.value="";
+  if(o)o.classList.add("show");
+  setTimeout(()=>{if(i)i.focus()},100);
+}
+function closeDiaryLock(){
+  const o=document.getElementById("diaryLockOverlay");
+  if(o)o.classList.remove("show");
+}
+function unlockDiary(){
+  const i=document.getElementById("diaryPinInput");
+  const e=document.getElementById("diaryPinError");
+  if(!i)return;
+  if(i.value===getDiaryPin()){
+    diaryUnlockedForSession=true;
+    if(e)e.style.display="none";
+    closeDiaryLock();
+    showDiaryPage();
+  }else{
+    if(e)e.style.display="block";
+    i.value="";
+    i.focus();
+  }
+}
+function showDiaryPage(){
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+  const p=document.getElementById("diary");
+  if(p)p.classList.add("active");
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page==="diary"));
+  if(typeof renderDiaryHistory==="function")renderDiaryHistory();
+  if(typeof resetPageScroll==="function")resetPageScroll(); else window.scrollTo(0,0);
+}
+document.addEventListener("click",function(e){
+  const b=e.target.closest('nav button[data-page="diary"]');
+  if(!b)return;
+  if(isDiaryLockEnabled()&&!diaryUnlockedForSession){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    openDiaryLock();
+  }
+},true);
+document.addEventListener("DOMContentLoaded",()=>{
+  updateDiaryLockUI();
+  const i=document.getElementById("diaryPinInput");
+  if(i)i.addEventListener("keydown",e=>{if(e.key==="Enter")unlockDiary()});
+});
+
 </script>
 </body></html>
