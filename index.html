@@ -106,6 +106,33 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 #aboutApp,#privacyPolicy,#dataInfo,#contactInfo{min-height:100vh}
 #aboutApp>header,#privacyPolicy>header,#dataInfo>header,#contactInfo>header{margin-top:0}
 
+
+/* iPhone: information pages always open from the visible top */
+#aboutApp.page.active,
+#privacyPolicy.page.active,
+#dataInfo.page.active,
+#contactInfo.page.active{
+  position:fixed;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:430px;
+  height:calc(100dvh - 82px);
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  z-index:15;
+  background:linear-gradient(180deg,#fffafd,#f9f0f7);
+  padding-top:env(safe-area-inset-top);
+}
+#aboutApp.page.active>header,
+#privacyPolicy.page.active>header,
+#dataInfo.page.active>header,
+#contactInfo.page.active>header{
+  padding-top:24px;
+}
+
 </style>
 </head>
 <body>
@@ -194,6 +221,7 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
     </div>
     <p id="homePhotoStatus" class="muted home-photo-note"></p>
   </div>
+</div>
 
 <div class="card">
   <h3 style="margin:0 0 8px">ℹ️ このアプリについて</h3>
