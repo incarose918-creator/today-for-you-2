@@ -185,6 +185,13 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
   .birthday-nowrap{font-size:23px}
 }
 
+
+.message-third{
+ margin-top:12px;
+ font-size:15px;
+ line-height:1.8;
+ color:#75676e;
+}
 </style>
 </head>
 <body><div id="birthdaySpecial"><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><div class="birthday-inner"><div class="birthday-kicker">HAPPY BIRTHDAY</div><div class="birthday-flower">🌷</div><h1 class="birthday-title"><span id="birthdayName"></span>さん<br><span class="birthday-greeting">お誕生日<br><span class="birthday-nowrap">おめでとうございます</span></span></h1><div class="birthday-card"><p id="birthdayMessage" class="birthday-message"></p><button class="birthday-button" onclick="closeBirthdaySpecial()">今日のあなたへ 🌸</button><div class="birthday-small">新しい一年の始まりに、小さな光を。</div></div></div></div>
@@ -517,7 +524,7 @@ function render(){
  let p=profile();if(!p){return}
  let [y,m,d]=p.birth.split("-").map(Number),k=key(),M=dailyMessage(p),fi=k%flowers.length;
  const customHomePhoto=localStorage.getItem("tfyCustomHomePhoto");dailyFlower.src=customHomePhoto||flowers[fi];messagePhoto.src=flowers[fi];
- msg.textContent=M[0];detail.textContent=M[1] + " " + M[2];msg2.textContent=M[0];
+ msg.textContent=M[0];detail.textContent=M[1] + " " + M[2];let m3=document.getElementById("message3");if(m3)m3.textContent=M[2];msg2.textContent=M[0];
  hello.textContent="こんにちは、"+p.name+"さん";let z=zodiac(m,d),e=eto(y);document.getElementById("zodiac").textContent=z;document.getElementById("eto").textContent=e;
  love.textContent=(60+k*7%31)+"点";money.textContent=(60+k*11%31)+"点";heart.textContent=(60+k*13%31)+"点";action.textContent=(60+k*17%31)+"点";
  fortuneText.textContent=M[1]+" "+["今日は整えることを優先して。","小さく始めると流れが良くなります。","自分の感覚を大切に。"][k%3];
@@ -973,5 +980,16 @@ function tfyApplyEnhanced(){
 }
 document.addEventListener("click",e=>{if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(tfyApplyEnhanced,20)});
 setTimeout(tfyApplyEnhanced,150);
+
+(function(){
+ const oldDailyMessage=dailyMessage;
+ dailyMessage=function(p){return oldDailyMessage(p)};
+ setTimeout(function(){
+   let m2=document.getElementById("message2");
+   if(m2&&!document.getElementById("message3")){
+     let x=document.createElement("div");x.id="message3";x.className="message-third";m2.insertAdjacentElement("afterend",x);
+   }
+ },50);
+})();
 </script>
 </body></html>
