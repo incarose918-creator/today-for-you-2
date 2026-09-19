@@ -241,6 +241,7 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 <small>🌸 今日のメッセージ</small>
 <h2 id="msg">焦らなくて大丈夫。あなたのペースで進んでいけば大丈夫。</h2>
 <p id="detail">うまくいかない日も、それは新しい未来につながる大切な一日です。</p>
+<p id="message3" class="message-third"></p>
 </div>
 </div>
 
@@ -524,7 +525,7 @@ function render(){
  let p=profile();if(!p){return}
  let [y,m,d]=p.birth.split("-").map(Number),k=key(),M=dailyMessage(p),fi=k%flowers.length;
  const customHomePhoto=localStorage.getItem("tfyCustomHomePhoto");dailyFlower.src=customHomePhoto||flowers[fi];messagePhoto.src=flowers[fi];
- msg.textContent=M[0];detail.textContent=M[1] + " " + M[2];let m3=document.getElementById("message3");if(m3)m3.textContent=M[2];msg2.textContent=M[0];
+ msg.textContent=M[0];detail.textContent=M[1];let m3=document.getElementById("message3");if(m3)m3.textContent=M[2];msg2.textContent=M[0];
  hello.textContent="こんにちは、"+p.name+"さん";let z=zodiac(m,d),e=eto(y);document.getElementById("zodiac").textContent=z;document.getElementById("eto").textContent=e;
  love.textContent=(60+k*7%31)+"点";money.textContent=(60+k*11%31)+"点";heart.textContent=(60+k*13%31)+"点";action.textContent=(60+k*17%31)+"点";
  fortuneText.textContent=M[1]+" "+["今日は整えることを優先して。","小さく始めると流れが良くなります。","自分の感覚を大切に。"][k%3];
@@ -981,15 +982,6 @@ function tfyApplyEnhanced(){
 document.addEventListener("click",e=>{if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(tfyApplyEnhanced,20)});
 setTimeout(tfyApplyEnhanced,150);
 
-(function(){
- const oldDailyMessage=dailyMessage;
- dailyMessage=function(p){return oldDailyMessage(p)};
- setTimeout(function(){
-   let m2=document.getElementById("message2");
-   if(m2&&!document.getElementById("message3")){
-     let x=document.createElement("div");x.id="message3";x.className="message-third";m2.insertAdjacentElement("afterend",x);
-   }
- },50);
-})();
+
 </script>
 </body></html>
