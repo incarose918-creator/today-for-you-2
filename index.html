@@ -474,12 +474,38 @@ const messageClosings=[
 "嬉しかったことを一つ覚えておくと、明日の光になります。",
 "今日もあなたの毎日に、ほんの少しの光がありますように。"
 ];
+
+const messageSparkles=[
+"今日は、小さな「好き」を一つ大切に。",
+"窓の外の光や空にも目を向けてみて。",
+"心が喜ぶことを、ほんの少し予定に入れて。",
+"ひとつ手放すと、新しい余白が生まれそうです。",
+"お気に入りのものが今日のお守りになりそう。",
+"誰かの優しさを受け取ることも大切です。",
+"ふと浮かんだアイデアをメモしておいて。",
+"いつもと違う道や選択に小さな発見がありそう。",
+"今日の自分に似合う言葉を一つ選んでみて。",
+"身近な花や季節の変化が心を和ませてくれそう。",
+"できないことより、今できることに目を向けて。",
+"明日のためではなく、今日を楽しむ時間も忘れずに。"
+];
+function tfySeasonLine(month){
+ if(month>=3&&month<=5)return "春のように、心にも新しい風を入れてみて。";
+ if(month>=6&&month<=8)return "明るい季節の光を味方に、軽やかに過ごして。";
+ if(month>=9&&month<=11)return "季節の移ろいと一緒に、心もゆっくり整えて。";
+ return "静かな季節だからこそ、自分を温める時間を大切に。";
+}
+
 function dailyMessage(p){
  let d=new Date(), ds=d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(), seed=(p&&p.birth?p.birth:"")+"|"+ds;
  let h=0;for(let c of seed)h=((h<<5)-h+c.charCodeAt(0))|0;h=Math.abs(h);
  let a=h%messageOpenings.length;
  let b=(Math.floor(h/messageOpenings.length)+d.getDate()*7+d.getMonth()*11)%messageClosings.length;
- return [messageOpenings[a],messageClosings[b]];
+ let c=(Math.floor(h/37)+d.getDate()*13+d.getMonth()*17)%messageSparkles.length;
+ let third=messageSparkles[c];
+ // About one day in four, use a seasonal closing for extra variety.
+ if((h+d.getDate())%4===0) third=tfySeasonLine(d.getMonth()+1);
+ return [messageOpenings[a],messageClosings[b],third];
 }
 function key(){let d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()}
 function zodiac(m,d){const n=m*100+d;if(n>=321&&n<=419)return"♈ 牡羊座";if(n>=420&&n<=520)return"♉ 牡牛座";if(n>=521&&n<=621)return"♊ 双子座";if(n>=622&&n<=722)return"♋ 蟹座";if(n>=723&&n<=822)return"♌ 獅子座";if(n>=823&&n<=922)return"♍ 乙女座";if(n>=923&&n<=1023)return"♎ 天秤座";if(n>=1024&&n<=1122)return"♏ 蠍座";if(n>=1123&&n<=1221)return"♐ 射手座";if(n>=1222||n<=119)return"♑ 山羊座";if(n>=120&&n<=218)return"♒ 水瓶座";return"♓ 魚座"}
@@ -491,7 +517,7 @@ function render(){
  let p=profile();if(!p){return}
  let [y,m,d]=p.birth.split("-").map(Number),k=key(),M=dailyMessage(p),fi=k%flowers.length;
  const customHomePhoto=localStorage.getItem("tfyCustomHomePhoto");dailyFlower.src=customHomePhoto||flowers[fi];messagePhoto.src=flowers[fi];
- msg.textContent=M[0];detail.textContent=M[1];msg2.textContent=M[0];
+ msg.textContent=M[0];detail.textContent=M[1] + " " + M[2];msg2.textContent=M[0];
  hello.textContent="こんにちは、"+p.name+"さん";let z=zodiac(m,d),e=eto(y);document.getElementById("zodiac").textContent=z;document.getElementById("eto").textContent=e;
  love.textContent=(60+k*7%31)+"点";money.textContent=(60+k*11%31)+"点";heart.textContent=(60+k*13%31)+"点";action.textContent=(60+k*17%31)+"点";
  fortuneText.textContent=M[1]+" "+["今日は整えることを優先して。","小さく始めると流れが良くなります。","自分の感覚を大切に。"][k%3];
