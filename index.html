@@ -228,7 +228,23 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
   font-size:14px!important;font-weight:700!important;text-align:left!important;
 }
 </style>
-</head>
+<style id="tfyKoyomiRedesign">
+#tfyKoyomiDetail{background:linear-gradient(180deg,#fff9fc,#fff4f9)!important;padding:calc(env(safe-area-inset-top) + 14px) 18px calc(92px + env(safe-area-inset-bottom))!important}
+.tfy-kd-head{border-radius:24px;padding:12px 4px 14px!important}
+.tfy-kd-title{font-family:serif;font-size:29px!important}
+.tfy-kd-intro{font-size:14px;line-height:1.7;color:#817078;margin:-5px 2px 14px}
+.tfy-kd-card{display:grid;grid-template-columns:92px 1fr;gap:13px;align-items:center;padding:14px!important;border-radius:20px!important}
+.tfy-kd-left{background:#fff2f7;border-radius:16px;padding:10px;text-align:left}
+.tfy-kd-type{font-size:11px;color:#927684}.tfy-kd-name{font-size:19px!important;margin:2px 0!important}
+.tfy-kd-reading{font-size:11px;color:#7f6d76}
+.tfy-kd-meaning{font-size:13px!important;line-height:1.75!important}
+.tfy-other-title{font-size:16px;font-weight:800;color:#57444e;margin:20px 4px 9px}
+.tfy-other-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.tfy-other{background:#fff;border:1px solid #f0d9e4;border-radius:17px;padding:12px 10px;font-size:13px;color:#5f4f57}
+.tfy-other small{display:block;color:#9c8992;margin-top:3px}
+.tfy-kd-note{background:#ffeaf4;border-radius:18px;padding:14px!important;color:#806b75!important}
+@media(max-width:360px){.tfy-kd-card{grid-template-columns:82px 1fr}.tfy-kd-name{font-size:17px!important}}
+</style></head>
 <body><div id="birthdaySpecial"><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><div class="birthday-inner"><div class="birthday-kicker">HAPPY BIRTHDAY</div><div class="birthday-flower">🌷</div><h1 class="birthday-title"><span id="birthdayName"></span>さん<br><span class="birthday-greeting">お誕生日<br><span class="birthday-nowrap">おめでとうございます</span></span></h1><div class="birthday-card"><p id="birthdayMessage" class="birthday-message"></p><button class="birthday-button" onclick="closeBirthdaySpecial()">今日のあなたへ 🌸</button><div class="birthday-small">新しい一年の始まりに、小さな光を。</div></div></div></div>
 
 <div id="diaryLockOverlay" class="diary-lock-overlay">
@@ -1166,4 +1182,29 @@ function tfyAddKoyomiDetailUI(){
 }
 document.addEventListener("DOMContentLoaded",()=>{setTimeout(tfyAddKoyomiDetailUI,800)});
 setTimeout(tfyAddKoyomiDetailUI,1200);
+</script><script id="tfyKoyomiRedesignScript">
+function tfyKoyomiRow(type,name,reading,meaning){
+ return '<div class="tfy-kd-card"><div class="tfy-kd-left"><div class="tfy-kd-type">'+type+'</div><div class="tfy-kd-name">'+name+'</div><div class="tfy-kd-reading">'+reading+'</div></div><div class="tfy-kd-meaning">'+meaning+'</div></div>';
+}
+function tfyBuildKoyomiDetail(){
+ let now=new Date(), iso=(typeof tfyIsoLocal==="function"?tfyIsoLocal(now):now.toISOString().slice(0,10));
+ let moon=(typeof tfyMoonIntegrated==="function"?tfyMoonIntegrated(now):null);
+ let rok=(typeof TFY_ROKUYO_2026!=="undefined"?TFY_ROKUYO_2026[iso]:"")||"暦情報";
+ let special=(typeof tfyKoyomiSpecials==="function"?tfyKoyomiSpecials(now):[]);
+ // These two are shown as "該当する場合" unless an exact day table is available.
+ let kami=special.includes("神吉日");
+ let fuju=special.includes("不成就日");
+ let html='<div class="tfy-kd-head"><button class="tfy-kd-back" type="button" onclick="tfyCloseKoyomi()">‹</button><div class="tfy-kd-title">今日の暦</div></div>'+
+ '<div class="tfy-kd-date">'+now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日</div>'+
+ '<div class="tfy-kd-intro">暦から読み解く、今日を心地よく過ごすためのヒントです。</div>';
+ html+=tfyKoyomiRow("六曜",rok,"",TFY_KOYOMI_MEANINGS[rok]||"昔から日取りの目安として親しまれてきた六曜です。");
+ html+=tfyKoyomiRow("暦注",kami?"神吉日":"神吉日","（かみよしにち）",kami?TFY_KOYOMI_MEANINGS["神吉日"]:"神事や神社参拝に吉とされる日です。今日が該当するかは、正確な暦注データがある場合のみ判定します。");
+ html+=tfyKoyomiRow("選日",fuju?"不成就日":"不成就日","（ふじょうじゅび）",fuju?TFY_KOYOMI_MEANINGS["不成就日"]:"新しい物事の開始には慎重に、とされる日です。今日が該当するかは、正確な選日データがある場合のみ判定します。");
+ if(moon) html+=tfyKoyomiRow("月",moon.i+" "+moon.p,"月齢 約"+moon.a.toFixed(1),moon.w);
+ html+='<div class="tfy-other-title">🌸 その他の暦情報</div><div class="tfy-other-grid">'+
+ '<div class="tfy-other">🌱 一粒万倍日<small>該当時に表示</small></div><div class="tfy-other">☀️ 天赦日<small>該当時に表示</small></div>'+
+ '<div class="tfy-other">🐯 寅の日<small>'+(special.includes("寅の日")?"今日":"該当時に表示")+'</small></div><div class="tfy-other">🐍 巳の日<small>'+(special.includes("巳の日")?"今日":"該当時に表示")+'</small></div></div>'+
+ '<div class="tfy-kd-note">💗 暦は昔から伝わる暮らしの目安のひとつです。吉凶にとらわれすぎず、今日を心地よく過ごすための小さなヒントとしてお楽しみください。</div>';
+ return html;
+}
 </script></body></html>
