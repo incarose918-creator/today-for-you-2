@@ -288,7 +288,16 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
  #birthdaySpecial .birthday-title{font-size:28px!important}
 }
 </style>
-</head>
+<meta name="description" content="毎日に、ほんの少しの光を。メッセージ、占い、暦、日記を楽しめる『今日のあなたへ』。">
+<meta name="theme-color" content="#fff7fb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="今日のあなたへ">
+<meta name="format-detection" content="telephone=no">
+<style id="tfyPublicV1">
+.tfy-public-note{margin:14px 0;padding:14px 15px;border-radius:16px;background:#fff7fb;border:1px solid #efdce6;color:#75636c;font-size:12px;line-height:1.75}
+.tfy-public-note strong{color:#9b647d}
+</style></head>
 <body><div id="birthdaySpecial"><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><div class="birthday-inner"><div class="birthday-kicker">Happy Birthday</div><div class="birthday-flower">🌷</div><h1 class="birthday-title"><span id="birthdayName"></span>さん<br><span class="birthday-greeting">お誕生日<br><span class="birthday-nowrap">おめでとうございます</span></span></h1><div class="birthday-card"><p id="birthdayMessage" class="birthday-message"></p><button class="birthday-button" onclick="closeBirthdaySpecial()">今日のあなたへ 🌸</button><div class="birthday-small">新しい一年の始まりに、小さな光を。</div></div></div></div>
 
 <div id="diaryLockOverlay" class="diary-lock-overlay">
@@ -1394,4 +1403,18 @@ window.addEventListener("pageshow",()=>setTimeout(()=>checkBirthdaySpecial(false
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>checkBirthdaySpecial(false),250)});
 setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();checkBirthdaySpecial(false)},900);
 </script>
-</body></html>
+<script id="tfyPublicV1Release">
+(function(){
+ function addPublicNote(){
+  if(document.getElementById("tfyPublicV1Notice"))return;
+  const page=document.getElementById("mypage")||document.getElementById("myPage");
+  if(!page)return;
+  const n=document.createElement("div");
+  n.id="tfyPublicV1Notice";n.className="tfy-public-note";
+  n.innerHTML="<strong>Version 1.0 公開版</strong><br>日記・お気に入り・プロフィール・選択した写真などのデータは、このWeb版では基本的にお使いの端末・ブラウザ内に保存されます。Safariなどのサイトデータを削除すると消える場合があります。大切な内容は別の場所にも残しておくことをおすすめします。<br>占い・暦の内容は、毎日を楽しむための参考情報です。医療・法律・投資などの専門的な判断の代わりにはなりません。";
+  page.appendChild(n);
+ }
+ document.addEventListener("DOMContentLoaded",addPublicNote);
+ setTimeout(addPublicNote,500);
+})();
+</script></body></html>
