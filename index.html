@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="今日のあなたへ">
 <meta name="theme-color" content="#fff8fc">
 <title>今日のあなたへ</title>
-<link rel="apple-touch-icon" sizes="180x180" href="D8CE27E0-A8F6-4F94-A3F8-130ACE1A63EF.png?v=3">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAFM0lEQVR4nO3dPY4kRRRF4RiEOzYOO0HCwpslsAA8NoCEgcQG8FgAS8AbayR2goONg4EERkqlVHffrPyLF/e9OJ/JTFdmR5x8mdWqad7998+/DXjLZ6NPAL6IAxJxQCIOSMQBiTggEQck4oBEHJCIAxJxQCIOSMQBiTggEQck4oBEHJCIAxJxQPp89AmM99evH9UfffHdN5Fn4ubdtB8w3mjitTkrmTGOQ1mszZbIXHGczmJtnkRmieOWLNZmSGSKdyu3l9HpNd3Uj6PfLpbvo3gcvfevdh+V44jZucJ9lI0jcs+q9lEzjvjdKtlHzThwi4JxjLqI6w2PanGM3aFifVSLAzcqFYfDhetwDncpFQfuVScOn0vW50wuqhMHbkcckIrE4TbJ3c7nnCJxoIc0nz7P+BnxjOe85v4xwRrzeYNzJb5xlM9izTMRxzimymLNLRGvOKbNYs0nEaN3K5Sx8FkHlzh8VsSByWpYxGGyFlYc1mR8HA6r4Gn4ygyOY/j3b27s+oyMgzL2GLhK428rsDUsDsbGfqPWakwclHHUkBXjtgJpQByMjXPi143JASk6DsbGFcGrx+SARByQQuPgnnJd5BoyOSARByTigJTm36308/6r39Qf/f3Ht5Fn4ibuA8ZuT6MbTbzmVknMh5BnnByHslh/iVsivU33zHGijFu+NqO54ri+u1P1MVEcd+3rPH3MEse9OzpJH1PE0WMvZ+ijfhz9drF8H8Xj6L1/tfsoHgeuqBxHzGVdeHjExeHzayeyC1vJypMDF5WNI3LaV72zlI0D1xEHpNA4eCa9LnINmRyQiANSdBzcWa4IXj0mB6QBcTA8zolft7KTI/LDwFU/eDwmDobHUUNWbNjkoI/9Rq1V2dtKi5r2Ve8pbWwcDI89Bq7S4MnR+zvvfVn3fv2x18/420rePmqX0RziaDn7KF9GM4mjZetjhjKaTxwtTx+TlNGs4ghwfV8Lv3F9ba442rXdnaqMNucvb1n2OPVv9olh9P+VHfV7oQx/J5jJY8eMk+OFOafCHtM9c2C/qSfHL19+2vPXvv/z695n4mmuOHbWsP1V87RSP45zQex8wdqhVI7j9izUIaomUjCOgCbUEYtVUiqO+CzePIEyidR5Kzu8jAefM7mowuQ4vRk7L/ETr19jhBj9+Lyd+gn6oZ27Zbd6H9HkZ+ct9eTYv0n3XsGPV9tzAqlHSNZnjv0/3Oy3MftfPOlTSMo49qx11yxOHChjH/nieLrKYVkcPWi6PrweSNuzZ9Lt9TW5tV85SZ+n0ZZrcqQooz07k0TzI00cWcpY1OjD7rbS3rqzbKymWxYvHDpzq3tKSzE58pbRNs/Qf344xrHzAvIvY7HzPN3GRvOMY83/8rrC/LszjePpZZRlbCyenq3h2GieD6QPP/z+45v/PVcZD2pO/Pzhp+Az2cl0crRyZTR95uo7Hc43jiE8x/soyeLoOjaWMrr2kWvsWT9ztFcjt9/ivmii3z/cffHkYfvA0fzjWCyJhJWx6NqHcxMPOeJYdNqtjftI/BGtZHrm6LGm268Zf0QrmSbHwy0X9KFNij+ig5RxLE5v2OlNij/iWInjWBzasFs2Kf6Io6SP42FjzzrtUPwRg9WJA7fL9G4FwYgDEnFAIg5IxAGJOCARByTigEQckIgDEnFAIg5IxAGJOCARByTigEQckIgDEnFAIg5IxAGJOCARByTigEQckIgDEnFAIg5IxAGJOCARByTigEQckIgDEnFAIg5IxAGJOCARByTigEQckP4Hy6rxL2rP2SMAAAAASUVORK5CYII=">
 <style>
 :root{--ink:#403640;--muted:#8c7d88;--pink:#e564a2;--lav:#9f83dc;--line:#efdde7;--bg:#fff9fc}
 *{box-sizing:border-box} html,body{margin:0;background:#f8f2f7;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}
@@ -848,7 +848,7 @@ function startWelcome(){
   if(w) w.classList.remove("show");
 
   if(typeof render==="function") render();
-  if(typeof tfyIntegrateHome==="function") setTimeout(tfyIntegrateHome,50);
+  if(typeof tfyIntegrateHome==="function"){setTimeout(tfyIntegrateHome,50);setTimeout(tfyIntegrateHome,300);}
   window.scrollTo(0,0);
 }
 
@@ -1025,7 +1025,14 @@ function tfyMoonIntegrated(d){
 }
 function tfyIsoLocal(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function tfyIntegratedProfile(){
- try{return JSON.parse(localStorage.getItem("tfyProfile")||localStorage.getItem("tfy-profile")||"null")}catch(e){return null}
+  const keys=["tfyProfile","tfy-profile"];
+  for(const k of keys){
+    try{
+      const p=JSON.parse(localStorage.getItem(k)||"null");
+      if(p && typeof p==="object") return p;
+    }catch(e){}
+  }
+  return null;
 }
 function tfySignIntegrated(b){
  let a=b.split("-").map(Number),m=a[1],d=a[2],cuts=[19,18,20,19,20,21,22,22,22,23,22,21],
@@ -1037,27 +1044,26 @@ function tfyEtoIntegrated(y){let a=["子","丑","寅","卯","辰","巳","午","�
 function tfyIntegrateHome(){
  let home=document.getElementById("home");if(!home)return;
  let p=tfyIntegratedProfile(), now=new Date(), moon=tfyMoonIntegrated(now), rok=TFY_ROKUYO_2026[tfyIsoLocal(now)]||"";
- // Find greeting/profile card by text, not fragile class names.
  let nodes=[...home.querySelectorAll("div,section")];
  let card=home.querySelector('[data-tfy-integrated="1"]') || nodes.find(el=>el.children.length<12 && /こんにちは/.test(el.textContent||"") && /(乙女座|牡羊座|牡牛座|双子座|蟹座|獅子座|天秤座|蠍座|射手座|山羊座|水瓶座|魚座)/.test(el.textContent||""));
  if(!card)return;
+
+ // The setup screen saves {name,birth} in tfyProfile. Use those exact values.
+ let name=(p && typeof p.name==="string" && p.name.trim()) ? p.name.trim() : "";
+ let birth=(p && typeof p.birth==="string") ? p.birth : "";
+
+ // If the integrated card was already built, don't destroy a valid displayed user name.
+ if(!name && card.dataset.tfyUserName) name=card.dataset.tfyUserName;
+ if(!birth && card.dataset.tfyBirth) birth=card.dataset.tfyBirth;
+
+ // No profile yet: leave the original profile card alone rather than showing "あなたさん".
+ if(!name || !birth) return;
+
  card.dataset.tfyIntegrated="1";
- let name=(p&&(p.nickname||p.name||p.nick||p.nicknameValue))?(p.nickname||p.name||p.nick||p.nicknameValue):"";
- if(!name){
-   try{
-     const q=JSON.parse(localStorage.getItem("tfyProfile")||"{}");
-     name=q.nickname||q.name||q.nick||"";
-   }catch(e){}
- }
- if(!name){
-   for(let i=0;i<localStorage.length;i++){
-     try{let v=JSON.parse(localStorage.getItem(localStorage.key(i)));if(v&&typeof v==="object"){name=v.nickname||v.name||v.nick||"";if(name)break}}catch(e){}
-   }
- }
- if(!name) name="あなた";
- let birth=p&&p.birth?p.birth:"";
- let sign=birth?tfySignIntegrated(birth):"";
- let eto=birth?tfyEtoIntegrated(+birth.slice(0,4)):"";
+ card.dataset.tfyUserName=name;
+ card.dataset.tfyBirth=birth;
+ let sign=tfySignIntegrated(birth);
+ let eto=tfyEtoIntegrated(+birth.slice(0,4));
  let dateLine=(now.getMonth()+1)+"月"+now.getDate()+"日"+(rok?"　"+rok:"")+"　"+moon.i+" "+moon.p;
  card.innerHTML='<div class="tfy-dayline">'+dateLine+'</div>'+
  '<div class="tfy-moonword">'+moon.w+'</div>'+
