@@ -1207,4 +1207,147 @@ function tfyBuildKoyomiDetail(){
  '<div class="tfy-kd-note">💗 暦は昔から伝わる暮らしの目安のひとつです。吉凶にとらわれすぎず、今日を心地よく過ごすための小さなヒントとしてお楽しみください。</div>';
  return html;
 }
-</script></body></html>
+</script>
+<script id="tfyAccurateCalendarBirthdayFix">
+if(typeof TFY_KOYOMI_MEANINGS!=="undefined" && !TFY_KOYOMI_MEANINGS["天赦日"]){
+ TFY_KOYOMI_MEANINGS["天赦日"]="季節と日の干支の組み合わせで定める吉日で、年に数回巡る特別な日として親しまれています。";
+}
+/* 暦の判定ルール
+   - 日干支: 2000-01-01 = 戊午を基準に60日周期
+   - 神吉日: 60干支中33干支
+   - 一粒万倍日: 節月 × 日支
+   - 天赦日: 季節 × 日干支
+   - 不成就日: 旧暦月日
+*/
+const TFY_LUNAR_INFO=[0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,0x06ca0,0x0b550,0x15355,0x04da0,0x0a5d0,0x14573,0x052d0,0x0a9a8,0x0e950,0x06aa0,0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b5a0,0x195a6,0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0,0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,0x05aa0,0x076a3,0x096d0,0x04bd7,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,0x14b63];
+function tfyLeapMonth(y){return TFY_LUNAR_INFO[y-1900]&15}
+function tfyLeapDays(y){return tfyLeapMonth(y)?((TFY_LUNAR_INFO[y-1900]&0x10000)?30:29):0}
+function tfyMonthDays(y,m){return (TFY_LUNAR_INFO[y-1900]&(0x10000>>m))?30:29}
+function tfyYearDays(y){let sum=348,info=TFY_LUNAR_INFO[y-1900];for(let bit=0x8000;bit>0x8;bit>>=1)sum+=(info&bit)?1:0;return sum+tfyLeapDays(y)}
+function tfyLunarAccurate(date){
+ if(date.getFullYear()<1900||date.getFullYear()>2050)return null;
+ const base=Date.UTC(1900,0,31), cur=Date.UTC(date.getFullYear(),date.getMonth(),date.getDate());
+ let off=Math.floor((cur-base)/86400000), y=1900;
+ while(y<=2050){let yd=tfyYearDays(y);if(off<yd)break;off-=yd;y++}
+ let leap=tfyLeapMonth(y), isLeap=false, m=1;
+ while(m<=12){
+   let md;
+   if(leap && m===leap+1 && !isLeap){m--;isLeap=true;md=tfyLeapDays(y)}
+   else md=tfyMonthDays(y,m);
+   if(off<md)break;
+   off-=md;
+   if(isLeap && m===leap)isLeap=false;
+   m++;
+ }
+ return {year:y,month:m,day:off+1,isLeap:isLeap};
+}
+const TFY_STEMS=["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
+const TFY_BRANCHES=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+function tfyDayKanshi(date){
+ const base=Date.UTC(2000,0,1), cur=Date.UTC(date.getFullYear(),date.getMonth(),date.getDate());
+ const diff=Math.floor((cur-base)/86400000), idx=((54+diff)%60+60)%60;
+ return {idx,stem:TFY_STEMS[idx%10],branch:TFY_BRANCHES[idx%12],name:TFY_STEMS[idx%10]+TFY_BRANCHES[idx%12]};
+}
+// Approximate apparent solar longitude; sufficient to determine the traditional 節月 away from the exact transition hour.
+function tfySolarLongitude(date){
+ const utc=Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),3,0,0); // JST noon
+ const jd=utc/86400000+2440587.5, T=(jd-2451545.0)/36525;
+ let L=(280.46646+36000.76983*T+0.0003032*T*T)%360;if(L<0)L+=360;
+ let M=(357.52911+35999.05029*T-0.0001537*T*T)%360;
+ let Mr=M*Math.PI/180;
+ let C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(Mr)+(0.019993-0.000101*T)*Math.sin(2*Mr)+0.000289*Math.sin(3*Mr);
+ let omega=(125.04-1934.136*T)*Math.PI/180;
+ return (L+C-0.00569-0.00478*Math.sin(omega)+360)%360;
+}
+function tfySetsuMonth(date){
+ let x=tfySolarLongitude(date);
+ if(x>=315&&x<345)return 1;if(x>=345||x<15)return 2;
+ if(x<45)return 3;if(x<75)return 4;if(x<105)return 5;if(x<135)return 6;
+ if(x<165)return 7;if(x<195)return 8;if(x<225)return 9;if(x<255)return 10;
+ if(x<285)return 11;return 12;
+}
+const TFY_ICHIRYU={1:["丑","午"],2:["酉","寅"],3:["子","卯"],4:["卯","辰"],5:["巳","午"],6:["酉","午"],7:["子","未"],8:["卯","申"],9:["酉","午"],10:["酉","戌"],11:["亥","子"],12:["卯","子"]};
+const TFY_KAMI=new Set(["乙丑","丁卯","己巳","庚午","壬申","癸酉","丁丑","己卯","壬午","甲申","乙酉","戊子","辛卯","甲午","丙申","丁酉","己亥","庚子","辛丑","癸卯","乙巳","丙午","丁未","戊申","己酉","辛亥","壬子","乙卯","戊午","己未","庚申","辛酉","癸亥"]);
+function tfySeasonForTensha(sm){if(sm>=1&&sm<=3)return "春";if(sm>=4&&sm<=6)return "夏";if(sm>=7&&sm<=9)return "秋";return "冬"}
+function tfyCalendarFacts(date){
+ const k=tfyDayKanshi(date), sm=tfySetsuMonth(date), lunar=tfyLunarAccurate(date);
+ const kami=TFY_KAMI.has(k.name);
+ const ichiryu=TFY_ICHIRYU[sm].includes(k.branch);
+ const targets={春:"戊寅",夏:"甲午",秋:"戊申",冬:"甲子"};
+ const tensha=k.name===targets[tfySeasonForTensha(sm)];
+ let fujo=false;
+ if(lunar){
+   const map={1:[3,11,19,27],7:[3,11,19,27],2:[2,10,18,26],8:[2,10,18,26],3:[1,9,17,25],9:[1,9,17,25],4:[4,12,20,28],10:[4,12,20,28],5:[5,13,21,29],11:[5,13,21,29],6:[6,14,22,30],12:[6,14,22,30]};
+   fujo=(map[lunar.month]||[]).includes(lunar.day);
+ }
+ return {k,sm,lunar,kami,ichiryu,tensha,fujo};
+}
+function tfyRokuyoAccurate(date){
+ const l=tfyLunarAccurate(date);if(!l)return "";
+ const names=["大安","赤口","先勝","友引","先負","仏滅"];
+ return names[(l.month+l.day)%6];
+}
+function tfyKoyomiRow2(type,name,reading,meaning,on=true){
+ const faded=on?"":" style=\"opacity:.52\"";
+ return '<div class="tfy-kd-card"'+faded+'><div class="tfy-kd-left"><div class="tfy-kd-type">'+type+'</div><div class="tfy-kd-name">'+name+'</div><div class="tfy-kd-reading">'+reading+'</div></div><div class="tfy-kd-meaning">'+meaning+'</div></div>';
+}
+tfyBuildKoyomiDetail=function(){
+ let now=new Date(), f=tfyCalendarFacts(now), moon=(typeof tfyMoonIntegrated==="function"?tfyMoonIntegrated(now):null), rok=tfyRokuyoAccurate(now)||"—";
+ let html='<div class="tfy-kd-head"><button class="tfy-kd-back" type="button" onclick="tfyCloseKoyomi()">‹</button><div class="tfy-kd-title">今日の暦</div></div>'+
+ '<div class="tfy-kd-date">'+now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日</div>'+
+ '<div class="tfy-kd-intro">暦から読み解く、今日を心地よく過ごすためのヒントです。</div>';
+ html+=tfyKoyomiRow2("六曜",rok,"",TFY_KOYOMI_MEANINGS[rok]||"昔から日取りの目安として親しまれてきた六曜です。");
+ if(f.kami) html+=tfyKoyomiRow2("暦注","神吉日","（かみよしにち）",TFY_KOYOMI_MEANINGS["神吉日"]);
+ if(f.fujo) html+=tfyKoyomiRow2("選日","不成就日","（ふじょうじゅび）",TFY_KOYOMI_MEANINGS["不成就日"]);
+ if(f.ichiryu) html+=tfyKoyomiRow2("選日","一粒万倍日","（いちりゅうまんばいび）",TFY_KOYOMI_MEANINGS["一粒万倍日"]);
+ if(f.tensha) html+=tfyKoyomiRow2("暦注","天赦日","（てんしゃにち）",TFY_KOYOMI_MEANINGS["天赦日"]);
+ if(moon) html+=tfyKoyomiRow2("月",moon.i+" "+moon.p,"月齢 約"+moon.a.toFixed(1),moon.w);
+ const extras=[];
+ if(f.k.branch==="寅")extras.push("🐯 寅の日");
+ if(f.k.branch==="巳")extras.push("🐍 巳の日");
+ if(extras.length)html+='<div class="tfy-other-title">🌸 その他の暦情報</div><div class="tfy-other-grid">'+extras.map(x=>'<div class="tfy-other">'+x+'<small>今日</small></div>').join("")+'</div>';
+ html+='<div class="tfy-kd-note">💗 暦は昔から伝わる暮らしの目安のひとつです。吉凶にとらわれすぎず、今日を心地よく過ごすための小さなヒントとしてお楽しみください。</div>';
+ return html;
+};
+// Main home calendar row also uses the same 六曜 calculation.
+const _tfyOldIntegrateHome = typeof tfyIntegrateHome==="function" ? tfyIntegrateHome : null;
+if(_tfyOldIntegrateHome){
+ tfyIntegrateHome=function(){
+   _tfyOldIntegrateHome();
+   const card=document.querySelector('[data-tfy-integrated="1"]');
+   if(!card)return;
+   const line=card.querySelector(".tfy-dayline"), now=new Date(), moon=tfyMoonIntegrated(now), rok=tfyRokuyoAccurate(now);
+   if(line)line.textContent=(now.getMonth()+1)+"月"+now.getDate()+"日　"+rok+"　"+moon.i+" "+moon.p;
+ };
+}
+// Birthday: key includes profile, so changing the birthday to today can be tested immediately.
+checkBirthdaySpecial=function(force){
+ let p;try{p=JSON.parse(localStorage.getItem("tfyProfile")||localStorage.getItem("tfy-profile")||"null")}catch(e){return}
+ if(!p||!p.birth)return;
+ const a=p.birth.split("-").map(Number), n=new Date();
+ if(a[1]!==n.getMonth()+1||a[2]!==n.getDate())return;
+ const key="tfy-birthday-v2-"+n.getFullYear()+"-"+(n.getMonth()+1)+"-"+n.getDate()+"|"+p.birth+"|"+(p.name||"");
+ if(!force && sessionStorage.getItem(key))return;
+ const box=document.getElementById("birthdaySpecial"),bn=document.getElementById("birthdayName"),bm=document.getElementById("birthdayMessage");
+ if(!box||!bn||!bm)return;
+ bn.textContent=p.name||"あなた";
+ let h=0,q=p.birth+"|"+n.getFullYear();for(let c of q)h=((h<<5)-h+c.charCodeAt(0))|0;
+ bm.textContent=birthdayMessages[Math.abs(h)%birthdayMessages.length];
+ box.classList.add("show");sessionStorage.setItem(key,"1");
+};
+function tfyClearBirthdayTestKeys(){
+ for(let i=sessionStorage.length-1;i>=0;i--){let k=sessionStorage.key(i);if(k&&k.indexOf("tfy-birthday-v2-")===0)sessionStorage.removeItem(k)}
+}
+if(typeof saveSetup==="function"){
+ const _saveSetup=saveSetup;
+ saveSetup=function(){tfyClearBirthdayTestKeys();_saveSetup();setTimeout(()=>checkBirthdaySpecial(true),180);}
+}
+if(typeof startWelcome==="function"){
+ const _startWelcome=startWelcome;
+ startWelcome=function(){tfyClearBirthdayTestKeys();_startWelcome();setTimeout(()=>checkBirthdaySpecial(true),180);}
+}
+window.addEventListener("pageshow",()=>setTimeout(()=>checkBirthdaySpecial(false),350));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>checkBirthdaySpecial(false),250)});
+setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();checkBirthdaySpecial(false)},900);
+</script>
+</body></html>
