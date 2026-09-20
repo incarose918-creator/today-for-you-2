@@ -848,6 +848,7 @@ function startWelcome(){
   if(w) w.classList.remove("show");
 
   if(typeof render==="function") render();
+  if(typeof tfyIntegrateHome==="function") setTimeout(tfyIntegrateHome,50);
   window.scrollTo(0,0);
 }
 
@@ -1038,9 +1039,9 @@ function tfyIntegrateHome(){
  let p=tfyIntegratedProfile(), now=new Date(), moon=tfyMoonIntegrated(now), rok=TFY_ROKUYO_2026[tfyIsoLocal(now)]||"";
  // Find greeting/profile card by text, not fragile class names.
  let nodes=[...home.querySelectorAll("div,section")];
- let card=nodes.find(el=>el.children.length<12 && /こんにちは/.test(el.textContent||"") && /(乙女座|牡羊座|牡牛座|双子座|蟹座|獅子座|天秤座|蠍座|射手座|山羊座|水瓶座|魚座)/.test(el.textContent||""));
+ let card=home.querySelector('[data-tfy-integrated="1"]') || nodes.find(el=>el.children.length<12 && /こんにちは/.test(el.textContent||"") && /(乙女座|牡羊座|牡牛座|双子座|蟹座|獅子座|天秤座|蠍座|射手座|山羊座|水瓶座|魚座)/.test(el.textContent||""));
  if(!card)return;
- if(card.dataset.tfyIntegrated==="1")return; card.dataset.tfyIntegrated="1";
+ card.dataset.tfyIntegrated="1";
  let name=(p&&(p.nickname||p.name||p.nick||p.nicknameValue))?(p.nickname||p.name||p.nick||p.nicknameValue):"";
  if(!name){
    try{
