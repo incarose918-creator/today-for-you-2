@@ -1671,4 +1671,56 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
 })();
 </script>
 
+
+<script id="tfyBirthdayCloseNavigationFix">
+(function(){
+  // Birthday is shown only once per page load/profile change, so closing it
+  // cannot immediately trigger it again from the global click listener.
+  let birthdayDismissed = false;
+
+  const previousCheck = window.checkBirthdaySpecial;
+  window.checkBirthdaySpecial = function(force){
+    if(birthdayDismissed && !force) return false;
+    return typeof previousCheck==="function" ? previousCheck(force) : false;
+  };
+
+  window.closeBirthdaySpecial = function(){
+    birthdayDismissed = true;
+    const box=document.getElementById("birthdaySpecial");
+    if(box){
+      box.classList.remove("show");
+      box.style.setProperty("display","none","important");
+      box.style.setProperty("pointer-events","none","important");
+    }
+    document.body.style.overflow="";
+    document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+    const home=document.getElementById("home");
+    if(home) home.classList.add("active");
+    document.querySelectorAll("nav button").forEach(x=>{
+      x.classList.toggle("active",x.dataset.page==="home");
+    });
+    window.scrollTo(0,0);
+  };
+
+  // Directly bind the birthday button and stop its click from reaching
+  // the old document-wide click handler that was reopening the overlay.
+  function bind(){
+    const box=document.getElementById("birthdaySpecial");
+    if(!box) return;
+    const btn=box.querySelector(".birthday-button");
+    if(btn && !btn.dataset.tfyCloseBound){
+      btn.dataset.tfyCloseBound="1";
+      btn.removeAttribute("onclick");
+      btn.addEventListener("click",function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+        window.closeBirthdaySpecial();
+      },true);
+    }
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind);
+  else bind();
+})();
+</script>
+
 </body></html>
