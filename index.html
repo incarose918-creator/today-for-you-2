@@ -303,9 +303,6 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 .fortune-date{font-size:13px;color:#8c7b83;margin-bottom:5px}.fortune-profile{font-size:14px;color:#78656e;margin-bottom:18px}.fortune-overall-label{font-size:14px;letter-spacing:.08em;color:#8d6f7b}.fortune-overall-score{font-size:48px;font-weight:700;line-height:1.15;margin-top:5px}.fortune-overall-score small{font-size:17px;font-weight:500}.fortune-stars,.stars{letter-spacing:2px;color:#b8874f}.fortune-stars{font-size:22px;margin:4px 0 14px}.fortune-main-message{font-size:19px;line-height:1.8;margin:8px 0 0}.fortune-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fortune-grid .card{margin:0;padding:15px 13px}.fortune-card-title{font-weight:700;font-size:15px}.fortune-card-score{font-size:25px;font-weight:700;margin:7px 0 2px}.fortune-card .stars{font-size:14px;margin-bottom:7px}.fortune-card p{font-size:13px;line-height:1.6;margin:0}.fortune-lucky-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fortune-lucky-grid>div{background:rgba(255,255,255,.62);border-radius:14px;padding:12px}.fortune-lucky-grid span{display:block;font-size:12px;color:#8c7b83;margin-bottom:5px}.fortune-lucky-grid strong{display:block;font-size:15px}.fortune-note{text-align:center;font-size:12px;padding:0 12px 12px}.fortune-action-card{background:linear-gradient(135deg,rgba(255,247,224,.8),rgba(255,244,248,.9))}
 @media(max-width:360px){.fortune-grid,.fortune-lucky-grid{grid-template-columns:1fr}.fortune-overall-score{font-size:42px}}
 </style>
-<style id="tfyFortuneReadingStyle">
-.tfy-home-fortune{padding:20px}.tfy-home-row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:16px;font-size:18px}.tfy-home-row:first-child{margin-top:0}.tfy-home-row span,.tfy-reading-card h3 span{color:#b8874f;letter-spacing:2px}.tfy-home-fortune>p{line-height:1.85;color:#655861;margin:8px 0 18px}.tfy-home-message{background:#fff3f8;border-radius:18px;padding:15px;margin-top:8px}.tfy-home-message p{line-height:1.8;margin:7px 0 0}.tfy-home-lucky{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.tfy-home-lucky span{background:#fff8fb;border-radius:14px;padding:12px;font-size:13px}.tfy-reading-card h3,.tfy-message-card h3{margin:0 0 10px;font-size:20px}.tfy-reading-card h3{display:flex;justify-content:space-between;gap:8px}.tfy-reading-card p,.tfy-message-card p{font-size:16px;line-height:1.9;margin:0;color:#5f525a}.tfy-message-card{background:linear-gradient(135deg,#fff3f8,#fffaf2)}
-</style>
 </head>
 <body><div id="birthdaySpecial"><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><div class="birthday-inner"><div class="birthday-kicker">Happy Birthday</div><div class="birthday-flower">🌷</div><h1 class="birthday-title"><span id="birthdayName"></span>さん<br><span class="birthday-greeting">お誕生日<br><span class="birthday-nowrap">おめでとうございます</span></span></h1><div class="birthday-card"><p id="birthdayMessage" class="birthday-message"></p><button class="birthday-button" onclick="closeBirthdaySpecial()">今日のあなたへ 🌸</button><div class="birthday-small">新しい一年の始まりに、小さな光を。</div></div></div></div>
 
@@ -362,6 +359,13 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 </div>
 
 <div class="card"><div id="hello" class="muted">こんにちは</div><div class="chips"><span id="zodiac" class="chip">♍ 乙女座</span><span id="eto" class="chip">🐑 未年</span></div></div>
+<h3>今日の運勢</h3>
+<div class="grid">
+<div class="score">💕 恋愛<div class="n" id="love">82点</div><div class="muted">自分を大切にすると◎</div></div>
+<div class="score">💰 お金<div class="n" id="money">63点</div><div class="muted">無理な買い物は控えて</div></div>
+<div class="score">🌿 心<div class="n" id="heart">71点</div><div class="muted">ゆっくり休もう</div></div>
+<div class="score">✨ 行動<div class="n" id="action">68点</div><div class="muted">小さく始めてOK</div></div>
+</div>
 </section>
 
 <section id="message" class="page">
@@ -371,19 +375,31 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 </section>
 
 <section id="fortune" class="page">
-<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">今日の運勢</div></header>
+<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">占い</div></header>
 <div class="card fortune-hero">
   <div class="fortune-date" id="fortuneDate"></div>
   <div class="fortune-profile" id="fortuneProfile"></div>
-  <div class="fortune-overall-label">🌿 今日の総合運</div>
+  <div class="fortune-overall-label">今日の総合運</div>
+  <div class="fortune-overall-score" id="overallScore">--</div>
   <div class="fortune-stars" id="overallStars">☆☆☆☆☆</div>
   <p id="fortuneText" class="fortune-main-message"></p>
 </div>
-<div class="card tfy-reading-card"><h3>💰 金運 <span id="fortuneMoneyStars">☆☆☆☆☆</span></h3><p id="fortuneMoneyAdvice"></p></div>
-<div class="card tfy-reading-card"><h3>💼 仕事運 <span id="fortuneWorkStars">☆☆☆☆☆</span></h3><p id="fortuneWorkAdvice"></p></div>
-<div class="card tfy-reading-card"><h3>💗 心の運 <span id="fortuneHeartStars">☆☆☆☆☆</span></h3><p id="fortuneHeartAdvice"></p></div>
-<div class="card tfy-message-card"><h3>🌸 今日のメッセージ</h3><p id="fortuneMessage"></p></div>
-<div class="card"><h3 style="margin:0 0 12px">🍀 今日のラッキー</h3><div class="fortune-lucky-grid"><div><span>🎨 ラッキーカラー</span><strong id="luckyColor"></strong></div><div><span>💎 ラッキーアイテム</span><strong id="luckyItem"></strong></div></div></div>
+<div class="fortune-grid">
+  <div class="card fortune-card"><div class="fortune-card-title">💕 恋愛運</div><div class="fortune-card-score" id="fortuneLove">--点</div><div class="stars" id="fortuneLoveStars"></div><p class="muted" id="fortuneLoveAdvice"></p></div>
+  <div class="card fortune-card"><div class="fortune-card-title">💼 仕事運</div><div class="fortune-card-score" id="fortuneWork">--点</div><div class="stars" id="fortuneWorkStars"></div><p class="muted" id="fortuneWorkAdvice"></p></div>
+  <div class="card fortune-card"><div class="fortune-card-title">💰 金運</div><div class="fortune-card-score" id="fortuneMoney">--点</div><div class="stars" id="fortuneMoneyStars"></div><p class="muted" id="fortuneMoneyAdvice"></p></div>
+  <div class="card fortune-card"><div class="fortune-card-title">🌿 健康運</div><div class="fortune-card-score" id="fortuneHealth">--点</div><div class="stars" id="fortuneHealthStars"></div><p class="muted" id="fortuneHealthAdvice"></p></div>
+</div>
+<div class="card fortune-lucky-card">
+  <h3 style="margin:0 0 12px">🍀 今日のラッキー</h3>
+  <div class="fortune-lucky-grid">
+    <div><span>🎨 カラー</span><strong id="luckyColor"></strong></div>
+    <div><span>🔢 ナンバー</span><strong id="luckyNumber"></strong></div>
+    <div><span>🎁 アイテム</span><strong id="luckyItem"></strong></div>
+    <div><span>🧭 方角</span><strong id="luckyDir"></strong></div>
+  </div>
+</div>
+<div class="card fortune-action-card"><h3 style="margin:0 0 8px">✨ 今日の開運アドバイス</h3><p id="luckyAdvice" style="font-size:18px;line-height:1.8;margin:0"></p></div>
 <p class="muted fortune-note">占いは、毎日を楽しむためのヒントとしてお楽しみください。</p>
 </section>
 
@@ -1431,65 +1447,25 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
  document.addEventListener("DOMContentLoaded",addPublicNote);
  setTimeout(addPublicNote,500);
 })();
-</script><script id="tfyFortuneV2Script">\n(function(){\n const COLORS=["ローズピンク","アイボリー","ラベンダー","フォレストグリーン","シャンパンゴールド","スカイブルー","コーラル","パールホワイト","ネイビー","ミントグリーン","ボルドー","ベージュ"];\n const ITEMS=["ハンカチ","小さな鏡","お気に入りのペン","腕時計","花の写真","温かい飲み物","香りのアイテム","ノート","小さなポーチ","アクセサリー","本","お気に入りの靴"];\n const DIRS=["東","南東","南","南西","西","北西","北","北東"];\n const MAIN=["今日は、自分の感覚を信じることで流れが整いそう。急がず、心地よい方を選んで。","小さな一歩が運を動かす日。完璧を待つより、できることから始めると◎。","人との何気ない会話にヒントがありそう。やさしい言葉を意識してみて。","今日は整えるほど運が味方してくれそう。身の回りや予定を少し軽くしてみて。","がんばり過ぎないことも大切な選択。余白を作ると次に進む力が戻ってきそう。","うれしいことを素直に受け取る日。小さな幸せを見逃さないで。","迷ったときは、今の自分が安心できる方へ。落ち着いた判断が良い流れにつながります。","これまで続けてきたことに光が当たりそう。自分の積み重ねを認めてあげて。","新しいことより、今あるものを大切にすると運気が安定しそう。","少し視点を変えると、思っていたより簡単な答えが見つかるかも。"];\n const ADV={\n love:["自然体の笑顔が魅力を引き出す日。","相手の話をゆっくり聞くと距離が縮まりそう。","自分を大切にすることが良いご縁につながります。","素直な『ありがとう』が温かな流れを作りそう。","懐かしい人との会話に小さな幸運がありそう。","今日は無理に合わせず、自分の気持ちも大切に。"],\n work:["一つずつ丁寧に進めることが近道。","気になっていた小さな仕事を片づけると流れが良くなりそう。","確認を一度増やすと安心して進められます。","思いついたことをメモすると次の一歩が見えそう。","周りに頼ることで、かえってスムーズに進みそう。","まず5分だけ始めると勢いがつきそう。"],\n money:["買う前に一度考えると満足度の高い選択ができそう。","今日は財布や支出を整えると安心につながります。","持っているものを活かすと新しい価値が見つかりそう。","小さな節約より、納得できる使い方を意識して。","数字を落ち着いて確認すると良い判断につながりそう。","予定外の買い物は一晩考えてからでも遅くありません。"],\n health:["深呼吸して、心と体に小さな余白を。","疲れを感じたら早めに休むことを意識して。","温かい飲み物でほっとする時間を作って。","少し体を伸ばすだけでも気分転換になりそう。","今日は自分にかける言葉を少し優しくしてみて。","睡眠や休息をいつもより大切にするとよさそう。"]};\n const OPEN=["朝、窓を開けて空気を入れ替える","机やバッグの中を一か所だけ整える","お気に入りの飲み物をゆっくり味わう","『ありがとう』を一度多く伝える","5分だけ自分のための時間を作る","気になっていたことを一つだけ終わらせる","好きな香りを楽しむ","今日できたことを一つ数える","いつもより少しゆっくり歩く","鏡を見て笑顔を作ってみる"];\n function hash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}\n function dateKey(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}\n function score(seed,kind,base){return 58+((hash(seed+"|"+kind)+base*7)%38)}\n function stars(n){let x=Math.max(1,Math.min(5,Math.round((n-50)/10)));return "★".repeat(x)+"☆".repeat(5-x)}\n function pick(a,seed,k){return a[hash(seed+"|"+k)%a.length]}\n function signName(b){try{return tfySign2(b)}catch(e){let a=b.split('-').map(Number);return zodiac(a[1],a[2]).replace(/^.. /,'')}}\n function etoName(y){try{return tfyEto2(y)}catch(e){return eto(y).replace(/^.. /,'').replace('年','')}}\n function setText(id,v){let e=document.getElementById(id);if(e)e.textContent=v}\n function apply(){\n   let p=profile();if(!p||!p.birth)return;\n   let day=dateKey(), seed=p.birth+"|"+day, sign=signName(p.birth), et=etoName(+p.birth.slice(0,4));\n   let signBase=hash(sign)%7, etoBase=hash(et)%7;\n   let sc={love:score(seed,'love',signBase),work:score(seed,'work',etoBase),money:score(seed,'money',signBase+etoBase),health:score(seed,'health',signBase*2+etoBase)};\n   let overall=Math.round((sc.love+sc.work+sc.money+sc.health)/4);\n   let now=new Date();setText('fortuneDate',now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日');\n   setText('fortuneProfile',(p.name||'あなた')+'さん ・ '+sign+' ・ '+et+'年');\n   let os=document.getElementById('overallScore');if(os)os.innerHTML=overall+'<small>点</small>';setText('overallStars',stars(overall));\n   setText('fortuneText',pick(MAIN,seed,'main'));\n   [['love','Love'],['work','Work'],['money','Money'],['health','Health']].forEach(([k,K])=>{setText('fortune'+K,sc[k]+'点');setText('fortune'+K+'Stars',stars(sc[k]));setText('fortune'+K+'Advice',pick(ADV[k],seed,k+'adv'))});\n   setText('luckyColor',pick(COLORS,seed,'color'));setText('luckyNumber',String(1+(hash(seed+'|number')%9)));setText('luckyItem',pick(ITEMS,seed,'item'));setText('luckyDir',pick(DIRS,seed,'dir'));setText('luckyAdvice',pick(OPEN,seed,'open')+'と、今日の流れが少し整いそう。');\n   // ホームの4項目も同じ占い結果にそろえる\n   setText('love',sc.love+'点');setText('money',sc.money+'点');setText('heart',sc.health+'点');setText('action',sc.work+'点');\n }\n window.tfyApplyEnhanced=apply;window.tfyApplyFortuneV2=apply;\n document.addEventListener('click',function(e){if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(apply,10)});\n setTimeout(apply,250);\n})();\n</script><script id="tfyFortuneReadingV3">
-(function(){
- const OVERALL=[
-  "今日は「無理に答えを出さなくてもいい日」。先のことを全部決めるより、自分が心地よいと思うほうを大切にすると、気持ちも流れも整っていきそうです。",
-  "今日は、急いで結果を求めるより足元を整える日。小さなことを一つずつ丁寧にすると、自然と次の道が見えてきそうです。",
-  "自分の感覚を信じたい日。周りに合わせすぎず、心がほっとする選択を一つ増やしてみてください。",
-  "頑張って前へ進むより、いったん余白を作ることで運が動きそう。今日できたことをきちんと認めてあげて。"
- ];
- const MONEY=[
-  "大きな買い物や投資は、勢いで決めるより一度保留が◎。「欲しい」と「今必要」を分けて考えると、お金に対する不安も少し小さくなりそう。",
-  "今日は増やすことより、納得できる使い方を意識して。予定外の買い物は少し時間を置くと、満足できる判断につながりそうです。",
-  "財布や支出を軽く見直すのに向く日。節約を頑張りすぎるより、満足度の低い出費を一つ減らすのがよさそうです。"
- ];
- const WORK=[
-  "頑張りすぎ注意の日。全部きちんとやろうとするより、「今日はここまでできれば十分」と区切るほうが結果的にうまくいきそうです。",
-  "一つずつ丁寧に進めることが近道。急ぐより確認を大切にすると、安心して仕事を進められそうです。",
-  "やることを詰め込みすぎないで。優先順位を三つくらいに絞ると、気持ちにも余裕が生まれそうです。"
- ];
- const HEART=[
-  "今日はここを一番大切に。花を見る、好きな香りを使う、ジュエリーを身につけるなど、自分のための小さな贅沢が気持ちを整えてくれそうです。",
-  "少し疲れを感じたら、休むことも今日の大切な予定に。自分にかける言葉をいつもより少し優しくしてみて。",
-  "誰かのためではなく、自分がほっとできる時間を少し確保して。心の余白が、明日の元気につながります。"
- ];
- const MSG=[
-  "これからの人生は、自分が安心できる場所を選んでいい。",
-  "小さな一歩にも、未来を変える力があります。",
-  "できないことより、今できることに目を向けて。",
-  "自分を大切にする選択は、遠回りではありません。"
- ];
- const COLORS=["淡いピンク","ラベンダー","アイボリー","パールホワイト","シャンパンゴールド","ミントグリーン"];
- const ITEMS=["お気に入りのジュエリー","小さな鏡","好きな香り","温かい飲み物","お気に入りのハンカチ","花の写真"];
- function h(s){let x=2166136261;for(let i=0;i<s.length;i++){x^=s.charCodeAt(i);x=Math.imul(x,16777619)}return x>>>0}
- function day(){let d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
- function pick(a,seed,k){return a[h(seed+"|"+k)%a.length]}
- function stars(n){return "★".repeat(n)+"☆".repeat(5-n)}
- function put(id,v){let e=document.getElementById(id);if(e)e.textContent=v}
- function apply(){let p=null;try{p=JSON.parse(localStorage.getItem('tfyProfile')||'null')}catch(_e){};if(!p||!p.birth)return;let seed=p.birth+'|'+day(),d=new Date(),bd=p.birth.split('-').map(Number);function zLocal(m,dd){let n=m*100+dd;if(n>=321&&n<=419)return'牡羊座';if(n>=420&&n<=520)return'牡牛座';if(n>=521&&n<=621)return'双子座';if(n>=622&&n<=722)return'蟹座';if(n>=723&&n<=822)return'獅子座';if(n>=823&&n<=922)return'乙女座';if(n>=923&&n<=1023)return'天秤座';if(n>=1024&&n<=1122)return'蠍座';if(n>=1123&&n<=1221)return'射手座';if(n>=1222||n<=119)return'山羊座';if(n<=218)return'水瓶座';return'魚座'}function eLocal(y){let a=['申年','酉年','戌年','亥年','子年','丑年','寅年','卯年','辰年','巳年','午年','未年'];return a[y%12]}let z=zLocal(bd[1],bd[2]),e=eLocal(bd[0]);
-  let overall=3+h(seed+'o')%3,money=3+h(seed+'m')%3,work=3+h(seed+'w')%3,heart=3+h(seed+'h')%3;
-  let ot=pick(OVERALL,seed,'overall'),mt=pick(MONEY,seed,'money'),wt=pick(WORK,seed,'work'),ht=pick(HEART,seed,'heart'),msg=pick(MSG,seed,'msg'),col=pick(COLORS,seed,'color'),item=pick(ITEMS,seed,'item');
-  if(day()==='2026-9-29' && z.includes('乙女座')){overall=4;money=3;work=4;heart=5;ot=OVERALL[0];mt=MONEY[0];wt=WORK[0];ht=HEART[0];msg=MSG[0];col='淡いピンク';item='お気に入りのジュエリー';}
-  put('fortuneDate',d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日');put('fortuneProfile',z+'・'+e+' の '+(p.name||'あなた')+'さんへ');put('overallStars',stars(overall));put('fortuneText',ot);put('fortuneMoneyStars',stars(money));put('fortuneMoneyAdvice',mt);put('fortuneWorkStars',stars(work));put('fortuneWorkAdvice',wt);put('fortuneHeartStars',stars(heart));put('fortuneHeartAdvice',ht);put('fortuneMessage','「'+msg+'」');put('luckyColor',col);put('luckyItem',item);
- }
- window.tfyApplyFortuneReading=apply;function boot(){apply();setTimeout(apply,100);setTimeout(apply,500)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();document.addEventListener('click',e=>{if(e.target.closest('nav button'))setTimeout(apply,30)});
-})();
-</script>
-<script id="tfyBirthdayControllerV7">
+</script>\n<script id="tfyFortuneV2Script">\n(function(){\n const COLORS=["ローズピンク","アイボリー","ラベンダー","フォレストグリーン","シャンパンゴールド","スカイブルー","コーラル","パールホワイト","ネイビー","ミントグリーン","ボルドー","ベージュ"];\n const ITEMS=["ハンカチ","小さな鏡","お気に入りのペン","腕時計","花の写真","温かい飲み物","香りのアイテム","ノート","小さなポーチ","アクセサリー","本","お気に入りの靴"];\n const DIRS=["東","南東","南","南西","西","北西","北","北東"];\n const MAIN=["今日は、自分の感覚を信じることで流れが整いそう。急がず、心地よい方を選んで。","小さな一歩が運を動かす日。完璧を待つより、できることから始めると◎。","人との何気ない会話にヒントがありそう。やさしい言葉を意識してみて。","今日は整えるほど運が味方してくれそう。身の回りや予定を少し軽くしてみて。","がんばり過ぎないことも大切な選択。余白を作ると次に進む力が戻ってきそう。","うれしいことを素直に受け取る日。小さな幸せを見逃さないで。","迷ったときは、今の自分が安心できる方へ。落ち着いた判断が良い流れにつながります。","これまで続けてきたことに光が当たりそう。自分の積み重ねを認めてあげて。","新しいことより、今あるものを大切にすると運気が安定しそう。","少し視点を変えると、思っていたより簡単な答えが見つかるかも。"];\n const ADV={\n love:["自然体の笑顔が魅力を引き出す日。","相手の話をゆっくり聞くと距離が縮まりそう。","自分を大切にすることが良いご縁につながります。","素直な『ありがとう』が温かな流れを作りそう。","懐かしい人との会話に小さな幸運がありそう。","今日は無理に合わせず、自分の気持ちも大切に。"],\n work:["一つずつ丁寧に進めることが近道。","気になっていた小さな仕事を片づけると流れが良くなりそう。","確認を一度増やすと安心して進められます。","思いついたことをメモすると次の一歩が見えそう。","周りに頼ることで、かえってスムーズに進みそう。","まず5分だけ始めると勢いがつきそう。"],\n money:["買う前に一度考えると満足度の高い選択ができそう。","今日は財布や支出を整えると安心につながります。","持っているものを活かすと新しい価値が見つかりそう。","小さな節約より、納得できる使い方を意識して。","数字を落ち着いて確認すると良い判断につながりそう。","予定外の買い物は一晩考えてからでも遅くありません。"],\n health:["深呼吸して、心と体に小さな余白を。","疲れを感じたら早めに休むことを意識して。","温かい飲み物でほっとする時間を作って。","少し体を伸ばすだけでも気分転換になりそう。","今日は自分にかける言葉を少し優しくしてみて。","睡眠や休息をいつもより大切にするとよさそう。"]};\n const OPEN=["朝、窓を開けて空気を入れ替える","机やバッグの中を一か所だけ整える","お気に入りの飲み物をゆっくり味わう","『ありがとう』を一度多く伝える","5分だけ自分のための時間を作る","気になっていたことを一つだけ終わらせる","好きな香りを楽しむ","今日できたことを一つ数える","いつもより少しゆっくり歩く","鏡を見て笑顔を作ってみる"];\n function hash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}\n function dateKey(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}\n function score(seed,kind,base){return 58+((hash(seed+"|"+kind)+base*7)%38)}\n function stars(n){let x=Math.max(1,Math.min(5,Math.round((n-50)/10)));return "★".repeat(x)+"☆".repeat(5-x)}\n function pick(a,seed,k){return a[hash(seed+"|"+k)%a.length]}\n function signName(b){try{return tfySign2(b)}catch(e){let a=b.split('-').map(Number);return zodiac(a[1],a[2]).replace(/^.. /,'')}}\n function etoName(y){try{return tfyEto2(y)}catch(e){return eto(y).replace(/^.. /,'').replace('年','')}}\n function setText(id,v){let e=document.getElementById(id);if(e)e.textContent=v}\n function apply(){\n   let p=profile();if(!p||!p.birth)return;\n   let day=dateKey(), seed=p.birth+"|"+day, sign=signName(p.birth), et=etoName(+p.birth.slice(0,4));\n   let signBase=hash(sign)%7, etoBase=hash(et)%7;\n   let sc={love:score(seed,'love',signBase),work:score(seed,'work',etoBase),money:score(seed,'money',signBase+etoBase),health:score(seed,'health',signBase*2+etoBase)};\n   let overall=Math.round((sc.love+sc.work+sc.money+sc.health)/4);\n   let now=new Date();setText('fortuneDate',now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日');\n   setText('fortuneProfile',(p.name||'あなた')+'さん ・ '+sign+' ・ '+et+'年');\n   let os=document.getElementById('overallScore');if(os)os.innerHTML=overall+'<small>点</small>';setText('overallStars',stars(overall));\n   setText('fortuneText',pick(MAIN,seed,'main'));\n   [['love','Love'],['work','Work'],['money','Money'],['health','Health']].forEach(([k,K])=>{setText('fortune'+K,sc[k]+'点');setText('fortune'+K+'Stars',stars(sc[k]));setText('fortune'+K+'Advice',pick(ADV[k],seed,k+'adv'))});\n   setText('luckyColor',pick(COLORS,seed,'color'));setText('luckyNumber',String(1+(hash(seed+'|number')%9)));setText('luckyItem',pick(ITEMS,seed,'item'));setText('luckyDir',pick(DIRS,seed,'dir'));setText('luckyAdvice',pick(OPEN,seed,'open')+'と、今日の流れが少し整いそう。');\n   // ホームの4項目も同じ占い結果にそろえる\n   setText('love',sc.love+'点');setText('money',sc.money+'点');setText('heart',sc.health+'点');setText('action',sc.work+'点');\n }\n window.tfyApplyEnhanced=apply;window.tfyApplyFortuneV2=apply;\n document.addEventListener('click',function(e){if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(apply,10)});\n setTimeout(apply,250);\n})();\n</script>\n<script id="cleanFix">
 (function(){
 let closed=false;
-function prof(){try{return JSON.parse(localStorage.getItem("tfyProfile")||localStorage.getItem("tfy-profile")||"null")}catch(e){return null}}
-function isBD(){const p=prof(),m=p&&String(p.birth||"").match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);if(!m)return false;const d=new Date();return +m[2]===d.getMonth()+1&&+m[3]===d.getDate()}
-function el(){return document.getElementById("birthdaySpecial")}
-function hide(){const b=el();if(b){b.classList.remove("show");b.style.setProperty("display","none","important");b.style.setProperty("visibility","hidden","important");b.style.setProperty("pointer-events","none","important")}document.body.style.overflow=""}
-function show(){if(closed||!isBD()){hide();return false}const p=prof(),b=el();if(!p||!b)return false;const n=document.getElementById("birthdayName");if(n)n.textContent=p.name||"あなた";b.style.removeProperty("visibility");b.style.removeProperty("pointer-events");b.style.setProperty("display","flex","important");b.classList.add("show");document.body.style.overflow="hidden";return true}
-function home(){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));const h=document.getElementById("home");if(h)h.classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page==="home"));window.scrollTo(0,0)}
-window.checkBirthdaySpecial=function(){return closed?false:show()};
-window.closeBirthdaySpecial=function(){closed=true;hide();home()};
-document.addEventListener("click",function(e){const b=e.target.closest&&e.target.closest("#birthdaySpecial .birthday-button");if(b){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();closed=true;hide();home()}},true);
-const obs=new MutationObserver(function(){if(closed)hide()});
-function boot(){closed=false;hide();const b=el();if(b)obs.observe(b,{attributes:true,attributeFilter:["class","style"]});setTimeout(show,150);setTimeout(show,700)}
+const P=()=>{try{return JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){return null}};
+const bd=()=>{let p=P(),m=p&&String(p.birth||"").match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);if(!m)return false;let d=new Date();return +m[2]===d.getMonth()+1&&+m[3]===d.getDate()};
+const box=()=>document.getElementById("birthdaySpecial");
+function hide(){let b=box();if(b){b.classList.remove("show");b.style.setProperty("display","none","important");b.style.setProperty("visibility","hidden","important");b.style.setProperty("pointer-events","none","important")}document.body.style.overflow=""}
+function show(){if(closed||!bd()){hide();return false}let p=P(),b=box();if(!p||!b)return false;let n=document.getElementById("birthdayName");if(n)n.textContent=p.name||"あなた";b.style.removeProperty("visibility");b.style.removeProperty("pointer-events");b.style.setProperty("display","flex","important");b.classList.add("show");document.body.style.overflow="hidden";return true}
+function home(){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));let x=document.getElementById("home");if(x)x.classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page==="home"));window.scrollTo(0,0)}
+function sync(){
+ let p=P();if(!p)return;let a=p.birth.split("-").map(Number),md=a[1]*100+a[2];
+ let zs=[[120,"♑","山羊座"],[219,"♒","水瓶座"],[321,"♓","魚座"],[420,"♈","牡羊座"],[521,"♉","牡牛座"],[622,"♊","双子座"],[723,"♋","蟹座"],[823,"♌","獅子座"],[923,"♍","乙女座"],[1024,"♎","天秤座"],[1123,"♏","蠍座"],[1222,"♐","射手座"],[1232,"♑","山羊座"]],z=zs.find(x=>md<x[0])||zs[12];
+ let ns=["申年","酉年","戌年","亥年","子年","丑年","寅年","卯年","辰年","巳年","午年","未年"],es=["🐒","🐓","🐕","🐗","🐭","🐮","🐯","🐰","🐲","🐍","🐴","🐑"],i=((a[0]-1968)%12+12)%12;
+ let page=document.getElementById("mypage");if(page)page.querySelectorAll("*").forEach(x=>{if(x.children.length)return;let s=(x.textContent||"").trim();if(/^.+さん$/.test(s)&&!s.startsWith("こんにちは"))x.textContent=p.name+"さん";else if(/座$/.test(s))x.textContent=z[1]+" "+z[2];else if(/[子丑寅卯辰巳午未申酉戌亥]年$/.test(s))x.textContent=es[i]+" "+ns[i]});
+}
+window.checkBirthdaySpecial=()=>closed?false:show();
+window.closeBirthdaySpecial=()=>{closed=true;hide();home()};
+document.addEventListener("click",e=>{let b=e.target.closest&&e.target.closest("#birthdaySpecial .birthday-button");if(b){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();closed=true;hide();home();return}if(e.target.closest&&e.target.closest("nav button"))setTimeout(()=>{sync();if(closed)hide()},20)},true);
+function boot(){closed=false;sync();setTimeout(show,250);setTimeout(show,900)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
 </script>
