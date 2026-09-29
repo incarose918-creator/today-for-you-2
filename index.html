@@ -369,8 +369,20 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 </section>
 
 <section id="fortune" class="page">
-<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">占い</div></header>
-<div class="card"><h3 style="margin:0 0 10px">今日の運勢</h3><p id="fortuneText" style="font-size:21px;line-height:1.8"></p><div class="chips"><span class="chip" id="luckyColor"></span><span class="chip" id="luckyDir"></span></div></div>
+<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">占い</div><div class="sub">今日のあなたの流れを、やさしくお届けします。</div></header>
+<div class="card">
+  <div id="fortuneDate" class="muted" style="font-size:14px;margin-bottom:8px"></div>
+  <h3 style="margin:0 0 10px">今日の運勢</h3>
+  <p id="fortuneText" style="font-size:20px;line-height:1.8;margin-bottom:12px"></p>
+  <div class="chips"><span class="chip" id="luckyColor"></span><span class="chip" id="luckyDir"></span></div>
+</div>
+<div class="grid" id="fortuneGrid">
+  <div class="score fortune-card" data-kind="love">💕 恋愛<div class="n" id="fortuneLove">★★★☆☆</div><div class="muted"></div></div>
+  <div class="score fortune-card" data-kind="money">💰 お金<div class="n" id="fortuneMoney">★★★☆☆</div><div class="muted"></div></div>
+  <div class="score fortune-card" data-kind="heart">🌿 心<div class="n" id="fortuneHeart">★★★☆☆</div><div class="muted"></div></div>
+  <div class="score fortune-card" data-kind="action">✨ 行動<div class="n" id="fortuneAction">★★★☆☆</div><div class="muted"></div></div>
+</div>
+<div class="card" style="margin-top:14px"><div class="muted" style="font-size:12px;line-height:1.7">占いは毎日を楽しむための小さなヒントです。大切な判断は、ご自身の状況に合わせてお考えください。</div></div>
 </section>
 
 <section id="diary" class="page">
@@ -1159,7 +1171,7 @@ function tfyIntegrateHome(){
  let dateLine=(now.getMonth()+1)+"月"+now.getDate()+"日"+(rok?"　"+rok:"")+"　"+moon.i+" "+moon.p;
  card.innerHTML='<div class="tfy-dayline">'+dateLine+'</div>'+
  '<div class="tfy-moonword">'+moon.w+'</div>'+
- '<div class="tfy-personline"><span class="tfy-pill">♍ '+sign+'</span><span class="tfy-pill">🐑 '+eto+'年</span> の '+name+'さんへ</div>'+
+ '<div class="tfy-personline"><span class="tfy-pill">✦ '+sign+'</span><span class="tfy-pill">✧ '+eto+'年</span> の '+name+'さんへ</div>'+
  '<button type="button" class="tfy-koyomi-link" onclick="tfyOpenKoyomi()">今日の暦を詳しく見る　›</button>';
  let h=[...home.querySelectorAll("h1,h2,h3")].find(x=>(x.textContent||"").trim()==="今日の運勢");
  if(h) h.classList.add("tfy-fortune-heading");
@@ -1417,4 +1429,42 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
  document.addEventListener("DOMContentLoaded",addPublicNote);
  setTimeout(addPublicNote,500);
 })();
-</script></body></html>
+</script>
+<script id="tfySafeFortunePatch">
+(function(){
+  const advice={
+    love:["やさしいひと言が、心の距離を近づけてくれそう。","自然体のあなたが魅力的に映る日。","相手の話をゆっくり聞くと嬉しい発見がありそう。","素直な『ありがとう』が温かな流れを作ります。","一人の時間も大切にすると、人とのご縁も整いそう。"],
+    money:["今日は大きく動くより、手元を整えると安心につながりそう。","欲しいものは少し時間を置いて考えると納得の選択に。","小さな節約より、満足度の低い出費を見直すとよさそう。","持っているものを活かすと、新しい価値に気づけそう。","数字を落ち着いて確認することが、良い判断につながります。"],
+    heart:["深呼吸をひとつ。自分のペースを大切に。","今日は自分にかける言葉を、少しやさしくしてみて。","好きな香りや音楽が、気持ちを整えてくれそう。","無理に答えを出さず、心が落ち着くのを待って大丈夫。","小さな幸せに気づきやすい日。ゆっくり味わって。"],
+    action:["まず5分だけ始めると、自然に流れに乗れそう。","一つずつ丁寧に進めることが今日の近道。","気になっていた小さなことを一つ片づけると軽やかに。","準備を整えてから動くとスムーズに進みそう。","小さな一歩が、新しい流れを連れてきそう。"]
+  };
+  const colors=["ピンク","アイボリー","ラベンダー","グリーン","ゴールド","ローズ","ライトブルー"];
+  const dirs=["東","南東","南","南西","西","北西","北","北東"];
+  function hash(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+  function getProfile(){try{return JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){return null}}
+  function renderSafeFortune(){
+    const page=document.getElementById("fortune"); if(!page)return;
+    const p=getProfile()||{}; const now=new Date();
+    const day=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+    const seed=(p.birth||"")+"|"+day;
+    const fd=document.getElementById("fortuneDate"); if(fd)fd.textContent=(now.getMonth()+1)+"月"+now.getDate()+"日の運勢";
+    const ft=document.getElementById("fortuneText");
+    const opens=["今日は、焦らず自分のペースを守ることで流れが整いそうです。","小さな選択を丁寧にすると、心地よい一日につながりそうです。","頑張りすぎず、今できることを一つずつ進めるのがよさそうです。","自分の感覚を大切にすると、自然と良い方向が見えてきそうです。","身近な小さな幸せに目を向けると、気持ちがやわらぐ一日です。"];
+    if(ft)ft.textContent=opens[hash(seed+"|main")%opens.length];
+    const lc=document.getElementById("luckyColor"),ld=document.getElementById("luckyDir");
+    if(lc)lc.textContent="🎨 "+colors[hash(seed+"|color")%colors.length];
+    if(ld)ld.textContent="🧭 "+dirs[hash(seed+"|dir")%dirs.length];
+    page.querySelectorAll(".fortune-card").forEach((card,i)=>{
+      const kind=card.dataset.kind; const h=hash(seed+"|"+kind); const stars=3+(h%3);
+      const n=card.querySelector(".n"),m=card.querySelector(".muted");
+      if(n)n.textContent="★".repeat(stars)+"☆".repeat(5-stars);
+      if(m)m.textContent=advice[kind][Math.floor(h/7)%advice[kind].length];
+    });
+  }
+  window.tfyRenderSafeFortune=renderSafeFortune;
+  document.addEventListener("DOMContentLoaded",()=>setTimeout(renderSafeFortune,200));
+  document.addEventListener("click",e=>{if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(renderSafeFortune,40)});
+  window.addEventListener("pageshow",()=>setTimeout(renderSafeFortune,200));
+})();
+</script>
+</body></html>
