@@ -362,19 +362,6 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 </div>
 
 <div class="card"><div id="hello" class="muted">こんにちは</div><div class="chips"><span id="zodiac" class="chip">♍ 乙女座</span><span id="eto" class="chip">🐑 未年</span></div></div>
-<h3>🌿 今日の運勢</h3>
-<div class="card tfy-home-fortune">
-  <div class="tfy-home-row"><strong>総合運</strong><span id="homeOverallStars">☆☆☆☆☆</span></div>
-  <p id="homeOverallText"></p>
-  <div class="tfy-home-row"><strong>💰 金運</strong><span id="homeMoneyStars">☆☆☆☆☆</span></div>
-  <p id="homeMoneyText"></p>
-  <div class="tfy-home-row"><strong>💼 仕事運</strong><span id="homeWorkStars">☆☆☆☆☆</span></div>
-  <p id="homeWorkText"></p>
-  <div class="tfy-home-row"><strong>💗 心の運</strong><span id="homeHeartStars">☆☆☆☆☆</span></div>
-  <p id="homeHeartText"></p>
-  <div class="tfy-home-message"><strong>今日のメッセージ</strong><p id="homeFortuneMessage"></p></div>
-  <div class="tfy-home-lucky"><span>🎨 <b id="homeLuckyColor"></b></span><span>💎 <b id="homeLuckyItem"></b></span></div>
-</div>
 </section>
 
 <section id="message" class="page">
@@ -1444,7 +1431,7 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
  document.addEventListener("DOMContentLoaded",addPublicNote);
  setTimeout(addPublicNote,500);
 })();
-</script>\n<script id="tfyFortuneV2Script">\n(function(){\n const COLORS=["ローズピンク","アイボリー","ラベンダー","フォレストグリーン","シャンパンゴールド","スカイブルー","コーラル","パールホワイト","ネイビー","ミントグリーン","ボルドー","ベージュ"];\n const ITEMS=["ハンカチ","小さな鏡","お気に入りのペン","腕時計","花の写真","温かい飲み物","香りのアイテム","ノート","小さなポーチ","アクセサリー","本","お気に入りの靴"];\n const DIRS=["東","南東","南","南西","西","北西","北","北東"];\n const MAIN=["今日は、自分の感覚を信じることで流れが整いそう。急がず、心地よい方を選んで。","小さな一歩が運を動かす日。完璧を待つより、できることから始めると◎。","人との何気ない会話にヒントがありそう。やさしい言葉を意識してみて。","今日は整えるほど運が味方してくれそう。身の回りや予定を少し軽くしてみて。","がんばり過ぎないことも大切な選択。余白を作ると次に進む力が戻ってきそう。","うれしいことを素直に受け取る日。小さな幸せを見逃さないで。","迷ったときは、今の自分が安心できる方へ。落ち着いた判断が良い流れにつながります。","これまで続けてきたことに光が当たりそう。自分の積み重ねを認めてあげて。","新しいことより、今あるものを大切にすると運気が安定しそう。","少し視点を変えると、思っていたより簡単な答えが見つかるかも。"];\n const ADV={\n love:["自然体の笑顔が魅力を引き出す日。","相手の話をゆっくり聞くと距離が縮まりそう。","自分を大切にすることが良いご縁につながります。","素直な『ありがとう』が温かな流れを作りそう。","懐かしい人との会話に小さな幸運がありそう。","今日は無理に合わせず、自分の気持ちも大切に。"],\n work:["一つずつ丁寧に進めることが近道。","気になっていた小さな仕事を片づけると流れが良くなりそう。","確認を一度増やすと安心して進められます。","思いついたことをメモすると次の一歩が見えそう。","周りに頼ることで、かえってスムーズに進みそう。","まず5分だけ始めると勢いがつきそう。"],\n money:["買う前に一度考えると満足度の高い選択ができそう。","今日は財布や支出を整えると安心につながります。","持っているものを活かすと新しい価値が見つかりそう。","小さな節約より、納得できる使い方を意識して。","数字を落ち着いて確認すると良い判断につながりそう。","予定外の買い物は一晩考えてからでも遅くありません。"],\n health:["深呼吸して、心と体に小さな余白を。","疲れを感じたら早めに休むことを意識して。","温かい飲み物でほっとする時間を作って。","少し体を伸ばすだけでも気分転換になりそう。","今日は自分にかける言葉を少し優しくしてみて。","睡眠や休息をいつもより大切にするとよさそう。"]};\n const OPEN=["朝、窓を開けて空気を入れ替える","机やバッグの中を一か所だけ整える","お気に入りの飲み物をゆっくり味わう","『ありがとう』を一度多く伝える","5分だけ自分のための時間を作る","気になっていたことを一つだけ終わらせる","好きな香りを楽しむ","今日できたことを一つ数える","いつもより少しゆっくり歩く","鏡を見て笑顔を作ってみる"];\n function hash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}\n function dateKey(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}\n function score(seed,kind,base){return 58+((hash(seed+"|"+kind)+base*7)%38)}\n function stars(n){let x=Math.max(1,Math.min(5,Math.round((n-50)/10)));return "★".repeat(x)+"☆".repeat(5-x)}\n function pick(a,seed,k){return a[hash(seed+"|"+k)%a.length]}\n function signName(b){try{return tfySign2(b)}catch(e){let a=b.split('-').map(Number);return zodiac(a[1],a[2]).replace(/^.. /,'')}}\n function etoName(y){try{return tfyEto2(y)}catch(e){return eto(y).replace(/^.. /,'').replace('年','')}}\n function setText(id,v){let e=document.getElementById(id);if(e)e.textContent=v}\n function apply(){\n   let p=profile();if(!p||!p.birth)return;\n   let day=dateKey(), seed=p.birth+"|"+day, sign=signName(p.birth), et=etoName(+p.birth.slice(0,4));\n   let signBase=hash(sign)%7, etoBase=hash(et)%7;\n   let sc={love:score(seed,'love',signBase),work:score(seed,'work',etoBase),money:score(seed,'money',signBase+etoBase),health:score(seed,'health',signBase*2+etoBase)};\n   let overall=Math.round((sc.love+sc.work+sc.money+sc.health)/4);\n   let now=new Date();setText('fortuneDate',now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日');\n   setText('fortuneProfile',(p.name||'あなた')+'さん ・ '+sign+' ・ '+et+'年');\n   let os=document.getElementById('overallScore');if(os)os.innerHTML=overall+'<small>点</small>';setText('overallStars',stars(overall));\n   setText('fortuneText',pick(MAIN,seed,'main'));\n   [['love','Love'],['work','Work'],['money','Money'],['health','Health']].forEach(([k,K])=>{setText('fortune'+K,sc[k]+'点');setText('fortune'+K+'Stars',stars(sc[k]));setText('fortune'+K+'Advice',pick(ADV[k],seed,k+'adv'))});\n   setText('luckyColor',pick(COLORS,seed,'color'));setText('luckyNumber',String(1+(hash(seed+'|number')%9)));setText('luckyItem',pick(ITEMS,seed,'item'));setText('luckyDir',pick(DIRS,seed,'dir'));setText('luckyAdvice',pick(OPEN,seed,'open')+'と、今日の流れが少し整いそう。');\n   // ホームの4項目も同じ占い結果にそろえる\n   setText('love',sc.love+'点');setText('money',sc.money+'点');setText('heart',sc.health+'点');setText('action',sc.work+'点');\n }\n window.tfyApplyEnhanced=apply;window.tfyApplyFortuneV2=apply;\n document.addEventListener('click',function(e){if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(apply,10)});\n setTimeout(apply,250);\n})();\n</script>\n<script id="tfyFortuneReadingV3">
+</script><script id="tfyFortuneV2Script">\n(function(){\n const COLORS=["ローズピンク","アイボリー","ラベンダー","フォレストグリーン","シャンパンゴールド","スカイブルー","コーラル","パールホワイト","ネイビー","ミントグリーン","ボルドー","ベージュ"];\n const ITEMS=["ハンカチ","小さな鏡","お気に入りのペン","腕時計","花の写真","温かい飲み物","香りのアイテム","ノート","小さなポーチ","アクセサリー","本","お気に入りの靴"];\n const DIRS=["東","南東","南","南西","西","北西","北","北東"];\n const MAIN=["今日は、自分の感覚を信じることで流れが整いそう。急がず、心地よい方を選んで。","小さな一歩が運を動かす日。完璧を待つより、できることから始めると◎。","人との何気ない会話にヒントがありそう。やさしい言葉を意識してみて。","今日は整えるほど運が味方してくれそう。身の回りや予定を少し軽くしてみて。","がんばり過ぎないことも大切な選択。余白を作ると次に進む力が戻ってきそう。","うれしいことを素直に受け取る日。小さな幸せを見逃さないで。","迷ったときは、今の自分が安心できる方へ。落ち着いた判断が良い流れにつながります。","これまで続けてきたことに光が当たりそう。自分の積み重ねを認めてあげて。","新しいことより、今あるものを大切にすると運気が安定しそう。","少し視点を変えると、思っていたより簡単な答えが見つかるかも。"];\n const ADV={\n love:["自然体の笑顔が魅力を引き出す日。","相手の話をゆっくり聞くと距離が縮まりそう。","自分を大切にすることが良いご縁につながります。","素直な『ありがとう』が温かな流れを作りそう。","懐かしい人との会話に小さな幸運がありそう。","今日は無理に合わせず、自分の気持ちも大切に。"],\n work:["一つずつ丁寧に進めることが近道。","気になっていた小さな仕事を片づけると流れが良くなりそう。","確認を一度増やすと安心して進められます。","思いついたことをメモすると次の一歩が見えそう。","周りに頼ることで、かえってスムーズに進みそう。","まず5分だけ始めると勢いがつきそう。"],\n money:["買う前に一度考えると満足度の高い選択ができそう。","今日は財布や支出を整えると安心につながります。","持っているものを活かすと新しい価値が見つかりそう。","小さな節約より、納得できる使い方を意識して。","数字を落ち着いて確認すると良い判断につながりそう。","予定外の買い物は一晩考えてからでも遅くありません。"],\n health:["深呼吸して、心と体に小さな余白を。","疲れを感じたら早めに休むことを意識して。","温かい飲み物でほっとする時間を作って。","少し体を伸ばすだけでも気分転換になりそう。","今日は自分にかける言葉を少し優しくしてみて。","睡眠や休息をいつもより大切にするとよさそう。"]};\n const OPEN=["朝、窓を開けて空気を入れ替える","机やバッグの中を一か所だけ整える","お気に入りの飲み物をゆっくり味わう","『ありがとう』を一度多く伝える","5分だけ自分のための時間を作る","気になっていたことを一つだけ終わらせる","好きな香りを楽しむ","今日できたことを一つ数える","いつもより少しゆっくり歩く","鏡を見て笑顔を作ってみる"];\n function hash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}\n function dateKey(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}\n function score(seed,kind,base){return 58+((hash(seed+"|"+kind)+base*7)%38)}\n function stars(n){let x=Math.max(1,Math.min(5,Math.round((n-50)/10)));return "★".repeat(x)+"☆".repeat(5-x)}\n function pick(a,seed,k){return a[hash(seed+"|"+k)%a.length]}\n function signName(b){try{return tfySign2(b)}catch(e){let a=b.split('-').map(Number);return zodiac(a[1],a[2]).replace(/^.. /,'')}}\n function etoName(y){try{return tfyEto2(y)}catch(e){return eto(y).replace(/^.. /,'').replace('年','')}}\n function setText(id,v){let e=document.getElementById(id);if(e)e.textContent=v}\n function apply(){\n   let p=profile();if(!p||!p.birth)return;\n   let day=dateKey(), seed=p.birth+"|"+day, sign=signName(p.birth), et=etoName(+p.birth.slice(0,4));\n   let signBase=hash(sign)%7, etoBase=hash(et)%7;\n   let sc={love:score(seed,'love',signBase),work:score(seed,'work',etoBase),money:score(seed,'money',signBase+etoBase),health:score(seed,'health',signBase*2+etoBase)};\n   let overall=Math.round((sc.love+sc.work+sc.money+sc.health)/4);\n   let now=new Date();setText('fortuneDate',now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日');\n   setText('fortuneProfile',(p.name||'あなた')+'さん ・ '+sign+' ・ '+et+'年');\n   let os=document.getElementById('overallScore');if(os)os.innerHTML=overall+'<small>点</small>';setText('overallStars',stars(overall));\n   setText('fortuneText',pick(MAIN,seed,'main'));\n   [['love','Love'],['work','Work'],['money','Money'],['health','Health']].forEach(([k,K])=>{setText('fortune'+K,sc[k]+'点');setText('fortune'+K+'Stars',stars(sc[k]));setText('fortune'+K+'Advice',pick(ADV[k],seed,k+'adv'))});\n   setText('luckyColor',pick(COLORS,seed,'color'));setText('luckyNumber',String(1+(hash(seed+'|number')%9)));setText('luckyItem',pick(ITEMS,seed,'item'));setText('luckyDir',pick(DIRS,seed,'dir'));setText('luckyAdvice',pick(OPEN,seed,'open')+'と、今日の流れが少し整いそう。');\n   // ホームの4項目も同じ占い結果にそろえる\n   setText('love',sc.love+'点');setText('money',sc.money+'点');setText('heart',sc.health+'点');setText('action',sc.work+'点');\n }\n window.tfyApplyEnhanced=apply;window.tfyApplyFortuneV2=apply;\n document.addEventListener('click',function(e){if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(apply,10)});\n setTimeout(apply,250);\n})();\n</script><script id="tfyFortuneReadingV3">
 (function(){
  const OVERALL=[
   "今日は「無理に答えを出さなくてもいい日」。先のことを全部決めるより、自分が心地よいと思うほうを大切にすると、気持ちも流れも整っていきそうです。",
@@ -1485,9 +1472,103 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
   let ot=pick(OVERALL,seed,'overall'),mt=pick(MONEY,seed,'money'),wt=pick(WORK,seed,'work'),ht=pick(HEART,seed,'heart'),msg=pick(MSG,seed,'msg'),col=pick(COLORS,seed,'color'),item=pick(ITEMS,seed,'item');
   if(day()==='2026-9-29' && z.includes('乙女座')){overall=4;money=3;work=4;heart=5;ot=OVERALL[0];mt=MONEY[0];wt=WORK[0];ht=HEART[0];msg=MSG[0];col='淡いピンク';item='お気に入りのジュエリー';}
   put('fortuneDate',d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日');put('fortuneProfile',z+'・'+e+' の '+(p.name||'あなた')+'さんへ');put('overallStars',stars(overall));put('fortuneText',ot);put('fortuneMoneyStars',stars(money));put('fortuneMoneyAdvice',mt);put('fortuneWorkStars',stars(work));put('fortuneWorkAdvice',wt);put('fortuneHeartStars',stars(heart));put('fortuneHeartAdvice',ht);put('fortuneMessage','「'+msg+'」');put('luckyColor',col);put('luckyItem',item);
-  put('homeOverallStars',stars(overall));put('homeOverallText',ot);put('homeMoneyStars',stars(money));put('homeMoneyText',mt);put('homeWorkStars',stars(work));put('homeWorkText',wt);put('homeHeartStars',stars(heart));put('homeHeartText',ht);put('homeFortuneMessage','「'+msg+'」');put('homeLuckyColor',col);put('homeLuckyItem',item);
  }
  window.tfyApplyFortuneReading=apply;function boot(){apply();setTimeout(apply,100);setTimeout(apply,500)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();document.addEventListener('click',e=>{if(e.target.closest('nav button'))setTimeout(apply,30)});
 })();
 </script>
+
+<script id="tfyBirthdayReliableV3">
+(function(){
+  const messages = (typeof birthdayMessages !== "undefined" && birthdayMessages.length)
+    ? birthdayMessages
+    : [
+      "今日まで歩いてきたあなたへ。新しい一年が、やさしい光と小さな幸せに包まれますように。今日から始まる一年も、あなたらしく。",
+      "今日は、あなたが生まれた大切な日。これからの一年に、心がほどける時間と嬉しい出会いがたくさんありますように。"
+    ];
+
+  function getProfile(){
+    try{
+      return JSON.parse(localStorage.getItem("tfyProfile") || localStorage.getItem("tfy-profile") || "null");
+    }catch(e){ return null; }
+  }
+
+  function birthParts(birth){
+    if(!birth) return null;
+    const m = String(birth).match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if(!m) return null;
+    return {year:+m[1], month:+m[2], day:+m[3]};
+  }
+
+  function todayKey(d){
+    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  }
+
+  function messageIndex(text){
+    let h=0;
+    for(const c of text) h=((h<<5)-h+c.charCodeAt(0))|0;
+    return Math.abs(h)%messages.length;
+  }
+
+  window.checkBirthdaySpecial = function(force){
+    const p=getProfile(), bp=birthParts(p && p.birth), now=new Date();
+    if(!p || !bp) return false;
+    if(bp.month !== now.getMonth()+1 || bp.day !== now.getDate()) return false;
+
+    const box=document.getElementById("birthdaySpecial");
+    const name=document.getElementById("birthdayName");
+    const msg=document.getElementById("birthdayMessage");
+    if(!box || !name || !msg) return false;
+
+    const shownKey="tfy-birthday-reliable-"+todayKey(now)+"|"+p.birth+"|"+(p.name||"");
+    if(!force && sessionStorage.getItem(shownKey)==="1") return false;
+
+    name.textContent=p.name || "あなた";
+    msg.textContent=messages[messageIndex(p.birth+"|"+now.getFullYear())];
+    box.classList.add("show");
+    document.body.style.overflow="hidden";
+    sessionStorage.setItem(shownKey,"1");
+    return true;
+  };
+
+  window.closeBirthdaySpecial = function(){
+    const box=document.getElementById("birthdaySpecial");
+    if(box) box.classList.remove("show");
+    document.body.style.overflow="";
+    window.scrollTo(0,0);
+  };
+
+  function checkSoon(force){
+    setTimeout(function(){ window.checkBirthdaySpecial(!!force); }, 80);
+    setTimeout(function(){ window.checkBirthdaySpecial(false); }, 500);
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",function(){ checkSoon(false); });
+  }else{
+    checkSoon(false);
+  }
+  window.addEventListener("pageshow",function(){ checkSoon(false); });
+  document.addEventListener("visibilitychange",function(){
+    if(!document.hidden) checkSoon(false);
+  });
+  window.addEventListener("storage",function(e){
+    if(e.key==="tfyProfile" || e.key==="tfy-profile") checkSoon(true);
+  });
+
+  // Profile-saving actions: if the saved birthday is today, show immediately.
+  ["saveSetup","startWelcome"].forEach(function(fn){
+    const old=window[fn];
+    if(typeof old==="function" && !old.__tfyBirthdayWrapped){
+      const wrapped=function(){
+        const result=old.apply(this,arguments);
+        checkSoon(true);
+        return result;
+      };
+      wrapped.__tfyBirthdayWrapped=true;
+      window[fn]=wrapped;
+    }
+  });
+})();
+</script>
+
 </body></html>
