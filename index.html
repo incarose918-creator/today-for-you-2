@@ -1442,11 +1442,19 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
   const dirs=["東","南東","南","南西","西","北西","北","北東"];
   function hash(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
   function getProfile(){try{return JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){return null}}
+  function todayKey(){const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()}
+  function homeScores(){const k=todayKey();return {love:60+k*7%31,money:60+k*11%31,heart:60+k*13%31,action:60+k*17%31}}
+  function starsFromScore(score){return Math.max(1,Math.min(5,Math.ceil(score/20)))}
+  function syncHomeScores(scores){
+    const ids={love:"love",money:"money",heart:"heart",action:"action"};
+    Object.keys(ids).forEach(kind=>{const el=document.getElementById(ids[kind]);if(el)el.textContent=scores[kind]+"点"});
+  }
   function renderSafeFortune(){
     const page=document.getElementById("fortune"); if(!page)return;
     const p=getProfile()||{}; const now=new Date();
     const day=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
-    const seed=(p.birth||"")+"|"+day;
+    const seed=(p.birth||"")+"|"+day; const scores=homeScores();
+    syncHomeScores(scores);
     const fd=document.getElementById("fortuneDate"); if(fd)fd.textContent=(now.getMonth()+1)+"月"+now.getDate()+"日の運勢";
     const ft=document.getElementById("fortuneText");
     const opens=["今日は、焦らず自分のペースを守ることで流れが整いそうです。","小さな選択を丁寧にすると、心地よい一日につながりそうです。","頑張りすぎず、今できることを一つずつ進めるのがよさそうです。","自分の感覚を大切にすると、自然と良い方向が見えてきそうです。","身近な小さな幸せに目を向けると、気持ちがやわらぐ一日です。"];
@@ -1454,17 +1462,18 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
     const lc=document.getElementById("luckyColor"),ld=document.getElementById("luckyDir");
     if(lc)lc.textContent="🎨 "+colors[hash(seed+"|color")%colors.length];
     if(ld)ld.textContent="🧭 "+dirs[hash(seed+"|dir")%dirs.length];
-    page.querySelectorAll(".fortune-card").forEach((card,i)=>{
-      const kind=card.dataset.kind; const h=hash(seed+"|"+kind); const stars=3+(h%3);
+    page.querySelectorAll(".fortune-card").forEach(card=>{
+      const kind=card.dataset.kind;if(!scores[kind])return;
+      const h=hash(seed+"|"+kind),stars=starsFromScore(scores[kind]);
       const n=card.querySelector(".n"),m=card.querySelector(".muted");
       if(n)n.textContent="★".repeat(stars)+"☆".repeat(5-stars);
       if(m)m.textContent=advice[kind][Math.floor(h/7)%advice[kind].length];
     });
   }
   window.tfyRenderSafeFortune=renderSafeFortune;
-  document.addEventListener("DOMContentLoaded",()=>setTimeout(renderSafeFortune,200));
-  document.addEventListener("click",e=>{if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(renderSafeFortune,40)});
-  window.addEventListener("pageshow",()=>setTimeout(renderSafeFortune,200));
+  document.addEventListener("DOMContentLoaded",()=>setTimeout(renderSafeFortune,250));
+  document.addEventListener("click",e=>{if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(renderSafeFortune,60)});
+  window.addEventListener("pageshow",()=>setTimeout(renderSafeFortune,250));
 })();
 </script>
 </body></html>
