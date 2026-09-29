@@ -297,13 +297,7 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 <style id="tfyPublicV1">
 .tfy-public-note{margin:14px 0;padding:14px 15px;border-radius:16px;background:#fff7fb;border:1px solid #efdce6;color:#75636c;font-size:12px;line-height:1.75}
 .tfy-public-note strong{color:#9b647d}
-</style>
-<style id="tfyFortuneV2Style">
-#fortune .fortune-hero{text-align:center;padding:22px 18px;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,246,250,.94))}
-.fortune-date{font-size:13px;color:#8c7b83;margin-bottom:5px}.fortune-profile{font-size:14px;color:#78656e;margin-bottom:18px}.fortune-overall-label{font-size:14px;letter-spacing:.08em;color:#8d6f7b}.fortune-overall-score{font-size:48px;font-weight:700;line-height:1.15;margin-top:5px}.fortune-overall-score small{font-size:17px;font-weight:500}.fortune-stars,.stars{letter-spacing:2px;color:#b8874f}.fortune-stars{font-size:22px;margin:4px 0 14px}.fortune-main-message{font-size:19px;line-height:1.8;margin:8px 0 0}.fortune-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fortune-grid .card{margin:0;padding:15px 13px}.fortune-card-title{font-weight:700;font-size:15px}.fortune-card-score{font-size:25px;font-weight:700;margin:7px 0 2px}.fortune-card .stars{font-size:14px;margin-bottom:7px}.fortune-card p{font-size:13px;line-height:1.6;margin:0}.fortune-lucky-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fortune-lucky-grid>div{background:rgba(255,255,255,.62);border-radius:14px;padding:12px}.fortune-lucky-grid span{display:block;font-size:12px;color:#8c7b83;margin-bottom:5px}.fortune-lucky-grid strong{display:block;font-size:15px}.fortune-note{text-align:center;font-size:12px;padding:0 12px 12px}.fortune-action-card{background:linear-gradient(135deg,rgba(255,247,224,.8),rgba(255,244,248,.9))}
-@media(max-width:360px){.fortune-grid,.fortune-lucky-grid{grid-template-columns:1fr}.fortune-overall-score{font-size:42px}}
-</style>
-</head>
+</style></head>
 <body><div id="birthdaySpecial"><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><span class="birthday-petal">✿</span><span class="birthday-petal">🌸</span><div class="birthday-inner"><div class="birthday-kicker">Happy Birthday</div><div class="birthday-flower">🌷</div><h1 class="birthday-title"><span id="birthdayName"></span>さん<br><span class="birthday-greeting">お誕生日<br><span class="birthday-nowrap">おめでとうございます</span></span></h1><div class="birthday-card"><p id="birthdayMessage" class="birthday-message"></p><button class="birthday-button" onclick="closeBirthdaySpecial()">今日のあなたへ 🌸</button><div class="birthday-small">新しい一年の始まりに、小さな光を。</div></div></div></div>
 
 <div id="diaryLockOverlay" class="diary-lock-overlay">
@@ -376,31 +370,7 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 
 <section id="fortune" class="page">
 <header><div class="eyebrow">TODAY FOR YOU</div><div class="title">占い</div></header>
-<div class="card fortune-hero">
-  <div class="fortune-date" id="fortuneDate"></div>
-  <div class="fortune-profile" id="fortuneProfile"></div>
-  <div class="fortune-overall-label">今日の総合運</div>
-  <div class="fortune-overall-score" id="overallScore">--</div>
-  <div class="fortune-stars" id="overallStars">☆☆☆☆☆</div>
-  <p id="fortuneText" class="fortune-main-message"></p>
-</div>
-<div class="fortune-grid">
-  <div class="card fortune-card"><div class="fortune-card-title">💕 恋愛運</div><div class="fortune-card-score" id="fortuneLove">--点</div><div class="stars" id="fortuneLoveStars"></div><p class="muted" id="fortuneLoveAdvice"></p></div>
-  <div class="card fortune-card"><div class="fortune-card-title">💼 仕事運</div><div class="fortune-card-score" id="fortuneWork">--点</div><div class="stars" id="fortuneWorkStars"></div><p class="muted" id="fortuneWorkAdvice"></p></div>
-  <div class="card fortune-card"><div class="fortune-card-title">💰 金運</div><div class="fortune-card-score" id="fortuneMoney">--点</div><div class="stars" id="fortuneMoneyStars"></div><p class="muted" id="fortuneMoneyAdvice"></p></div>
-  <div class="card fortune-card"><div class="fortune-card-title">🌿 健康運</div><div class="fortune-card-score" id="fortuneHealth">--点</div><div class="stars" id="fortuneHealthStars"></div><p class="muted" id="fortuneHealthAdvice"></p></div>
-</div>
-<div class="card fortune-lucky-card">
-  <h3 style="margin:0 0 12px">🍀 今日のラッキー</h3>
-  <div class="fortune-lucky-grid">
-    <div><span>🎨 カラー</span><strong id="luckyColor"></strong></div>
-    <div><span>🔢 ナンバー</span><strong id="luckyNumber"></strong></div>
-    <div><span>🎁 アイテム</span><strong id="luckyItem"></strong></div>
-    <div><span>🧭 方角</span><strong id="luckyDir"></strong></div>
-  </div>
-</div>
-<div class="card fortune-action-card"><h3 style="margin:0 0 8px">✨ 今日の開運アドバイス</h3><p id="luckyAdvice" style="font-size:18px;line-height:1.8;margin:0"></p></div>
-<p class="muted fortune-note">占いは、毎日を楽しむためのヒントとしてお楽しみください。</p>
+<div class="card"><h3 style="margin:0 0 10px">今日の運勢</h3><p id="fortuneText" style="font-size:21px;line-height:1.8"></p><div class="chips"><span class="chip" id="luckyColor"></span><span class="chip" id="luckyDir"></span></div></div>
 </section>
 
 <section id="diary" class="page">
@@ -1009,8 +979,7 @@ function toggleDiaryLock(){
   const check=prompt("現在の暗証番号を入力してください。");
   if(check===null)return;
   if(check!==cur){alert("暗証番号が違います。");return}
-  const change=confirm("OK：暗証番号を変更
-キャンセル：ロックをOFF");
+  const change=confirm("OK：暗証番号を変更\nキャンセル：ロックをOFF");
   if(change){
     const a=prompt("新しい4桁の暗証番号を入力してください。");
     if(a===null)return;
@@ -1099,43 +1068,7 @@ function applyTfyDailyComments(){
 setTimeout(applyTfyDailyComments,100);
 document.addEventListener("click",e=>{if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(applyTfyDailyComments,0)});
 
-const birthdayMessages=["今日まで歩いてきたあなたへ。新しい一年が、やさしい光と小さな幸せに包まれますように。今日から始まる一年も、あなたらしく。","今日は、あなたが生まれた大切な日。これからの一年に、心がほどける時間と嬉しい出会いがたくさんありますように。","新しい一年の扉が、今日そっと開きます。頑張る日も休む日も、どちらもあなたの大切な時間。笑顔の多い一年になりますように。","これまで重ねてきた日々にありがとう。そして、これから出会う新しい景色へ。あなたの毎日に、あたたかな光が届きますように。","今日は自分自身をたくさん祝ってあげる日。好きなもの、好きな時間、好きな気持ちを大切にできる一年になりますように。","また一つ、新しい一年が始まります。急がず、比べず、あなたの歩幅で。心から『よかった』と思える瞬間が増えますように。"];
-let tfyBirthdayDismissedThisOpen=false;
-
-function tfyProfileNow(){
-  try{return JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){return null}
-}
-function tfyBirthdayIsToday(){
-  const p=tfyProfileNow();
-  if(!p||!p.birth)return false;
-  const a=String(p.birth).split("-").map(Number),n=new Date();
-  return a[1]===n.getMonth()+1 && a[2]===n.getDate();
-}
-function checkBirthdaySpecial(){
-  if(tfyBirthdayDismissedThisOpen || !tfyBirthdayIsToday())return false;
-  const p=tfyProfileNow(),box=document.getElementById("birthdaySpecial");
-  const bn=document.getElementById("birthdayName"),bm=document.getElementById("birthdayMessage");
-  if(!p||!box||!bn||!bm)return false;
-  bn.textContent=p.name||"あなた";
-  let h=0,q=p.birth+"|"+new Date().getFullYear();
-  for(let c of q)h=((h<<5)-h+c.charCodeAt(0))|0;
-  bm.textContent=birthdayMessages[Math.abs(h)%birthdayMessages.length];
-  box.classList.add("show");
-  box.style.display="";
-  document.body.style.overflow="hidden";
-  return true;
-}
-function closeBirthdaySpecial(){
-  tfyBirthdayDismissedThisOpen=true;
-  const box=document.getElementById("birthdaySpecial");
-  if(box){box.classList.remove("show");box.style.display="none";}
-  document.body.style.overflow="";
-  document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-  const home=document.getElementById("home"); if(home)home.classList.add("active");
-  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page==="home"));
-  scrollTo(0,0);
-}
-setTimeout(checkBirthdaySpecial,450);
+const birthdayMessages=["今日まで歩いてきたあなたへ。新しい一年が、やさしい光と小さな幸せに包まれますように。今日から始まる一年も、あなたらしく。","今日は、あなたが生まれた大切な日。これからの一年に、心がほどける時間と嬉しい出会いがたくさんありますように。","新しい一年の扉が、今日そっと開きます。頑張る日も休む日も、どちらもあなたの大切な時間。笑顔の多い一年になりますように。","これまで重ねてきた日々にありがとう。そして、これから出会う新しい景色へ。あなたの毎日に、あたたかな光が届きますように。","今日は自分自身をたくさん祝ってあげる日。好きなもの、好きな時間、好きな気持ちを大切にできる一年になりますように。","また一つ、新しい一年が始まります。急がず、比べず、あなたの歩幅で。心から『よかった』と思える瞬間が増えますように。"];function checkBirthdaySpecial(){let p;try{p=JSON.parse(localStorage.getItem("tfyProfile")||localStorage.getItem("tfy-profile")||"null")}catch(e){return}if(!p||!p.birth)return;const a=p.birth.split("-"),n=new Date();if(+a[1]!==n.getMonth()+1||+a[2]!==n.getDate())return;const k="tfy-birthday-shown-"+n.getFullYear();if(sessionStorage.getItem(k))return;document.getElementById("birthdayName").textContent=p.name||"あなた";let h=0,q=p.birth+"|"+n.getFullYear();for(let c of q)h=((h<<5)-h+c.charCodeAt(0))|0;document.getElementById("birthdayMessage").textContent=birthdayMessages[Math.abs(h)%birthdayMessages.length];document.getElementById("birthdaySpecial").classList.add("show");sessionStorage.setItem(k,"1")}function closeBirthdaySpecial(){document.getElementById("birthdaySpecial").classList.remove("show");scrollTo(0,0)}setTimeout(checkBirthdaySpecial,450);
 const tfySignPower={"牡羊座":[3,2,2,5],"牡牛座":[3,5,4,2],"双子座":[4,2,2,4],"蟹座":[5,3,4,2],"獅子座":[4,3,3,5],"乙女座":[3,4,4,4],"天秤座":[5,3,3,3],"蠍座":[5,4,4,3],"射手座":[3,2,3,5],"山羊座":[2,5,3,5],"水瓶座":[3,3,4,4],"魚座":[5,2,5,2]};
 const tfyEtoPower={"子":[1,2,0,2],"丑":[0,2,2,1],"寅":[1,0,0,3],"卯":[3,0,2,0],"辰":[1,1,0,3],"巳":[1,3,1,1],"午":[2,0,0,3],"未":[2,1,3,0],"申":[1,2,0,2],"酉":[0,2,1,2],"戌":[3,1,2,0],"亥":[1,0,1,3]};
 const tfyNewAdvice=[
@@ -1440,7 +1373,35 @@ if(_tfyOldIntegrateHome){
    if(line)line.textContent=(now.getMonth()+1)+"月"+now.getDate()+"日　"+rok+"　"+moon.i+" "+moon.p;
  };
 }
-setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome()},900);
+// Birthday: key includes profile, so changing the birthday to today can be tested immediately.
+checkBirthdaySpecial=function(force){
+ let p;try{p=JSON.parse(localStorage.getItem("tfyProfile")||localStorage.getItem("tfy-profile")||"null")}catch(e){return}
+ if(!p||!p.birth)return;
+ const a=p.birth.split("-").map(Number), n=new Date();
+ if(a[1]!==n.getMonth()+1||a[2]!==n.getDate())return;
+ const key="tfy-birthday-v2-"+n.getFullYear()+"-"+(n.getMonth()+1)+"-"+n.getDate()+"|"+p.birth+"|"+(p.name||"");
+ if(!force && sessionStorage.getItem(key))return;
+ const box=document.getElementById("birthdaySpecial"),bn=document.getElementById("birthdayName"),bm=document.getElementById("birthdayMessage");
+ if(!box||!bn||!bm)return;
+ bn.textContent=p.name||"あなた";
+ let h=0,q=p.birth+"|"+n.getFullYear();for(let c of q)h=((h<<5)-h+c.charCodeAt(0))|0;
+ bm.textContent=birthdayMessages[Math.abs(h)%birthdayMessages.length];
+ box.classList.add("show");sessionStorage.setItem(key,"1");
+};
+function tfyClearBirthdayTestKeys(){
+ for(let i=sessionStorage.length-1;i>=0;i--){let k=sessionStorage.key(i);if(k&&k.indexOf("tfy-birthday-v2-")===0)sessionStorage.removeItem(k)}
+}
+if(typeof saveSetup==="function"){
+ const _saveSetup=saveSetup;
+ saveSetup=function(){tfyClearBirthdayTestKeys();_saveSetup();setTimeout(()=>checkBirthdaySpecial(true),180);}
+}
+if(typeof startWelcome==="function"){
+ const _startWelcome=startWelcome;
+ startWelcome=function(){tfyClearBirthdayTestKeys();_startWelcome();setTimeout(()=>checkBirthdaySpecial(true),180);}
+}
+window.addEventListener("pageshow",()=>setTimeout(()=>checkBirthdaySpecial(false),350));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)setTimeout(()=>checkBirthdaySpecial(false),250)});
+setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();checkBirthdaySpecial(false)},900);
 </script>
 <script id="tfyPublicV1Release">
 (function(){
@@ -1456,106 +1417,4 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome()},900)
  document.addEventListener("DOMContentLoaded",addPublicNote);
  setTimeout(addPublicNote,500);
 })();
-</script>
-<script id="tfyFortuneV2Script">
-(function(){
- const COLORS=["ローズピンク","アイボリー","ラベンダー","フォレストグリーン","シャンパンゴールド","スカイブルー","コーラル","パールホワイト","ネイビー","ミントグリーン","ボルドー","ベージュ"];
- const ITEMS=["ハンカチ","小さな鏡","お気に入りのペン","腕時計","花の写真","温かい飲み物","香りのアイテム","ノート","小さなポーチ","アクセサリー","本","お気に入りの靴"];
- const DIRS=["東","南東","南","南西","西","北西","北","北東"];
- const MAIN=["今日は、自分の感覚を信じることで流れが整いそう。急がず、心地よい方を選んで。","小さな一歩が運を動かす日。完璧を待つより、できることから始めると◎。","人との何気ない会話にヒントがありそう。やさしい言葉を意識してみて。","今日は整えるほど運が味方してくれそう。身の回りや予定を少し軽くしてみて。","がんばり過ぎないことも大切な選択。余白を作ると次に進む力が戻ってきそう。","うれしいことを素直に受け取る日。小さな幸せを見逃さないで。","迷ったときは、今の自分が安心できる方へ。落ち着いた判断が良い流れにつながります。","これまで続けてきたことに光が当たりそう。自分の積み重ねを認めてあげて。","新しいことより、今あるものを大切にすると運気が安定しそう。","少し視点を変えると、思っていたより簡単な答えが見つかるかも。"];
- const ADV={
- love:["自然体の笑顔が魅力を引き出す日。","相手の話をゆっくり聞くと距離が縮まりそう。","自分を大切にすることが良いご縁につながります。","素直な『ありがとう』が温かな流れを作りそう。","懐かしい人との会話に小さな幸運がありそう。","今日は無理に合わせず、自分の気持ちも大切に。"],
- work:["一つずつ丁寧に進めることが近道。","気になっていた小さな仕事を片づけると流れが良くなりそう。","確認を一度増やすと安心して進められます。","思いついたことをメモすると次の一歩が見えそう。","周りに頼ることで、かえってスムーズに進みそう。","まず5分だけ始めると勢いがつきそう。"],
- money:["買う前に一度考えると満足度の高い選択ができそう。","今日は財布や支出を整えると安心につながります。","持っているものを活かすと新しい価値が見つかりそう。","小さな節約より、納得できる使い方を意識して。","数字を落ち着いて確認すると良い判断につながりそう。","予定外の買い物は一晩考えてからでも遅くありません。"],
- health:["深呼吸して、心と体に小さな余白を。","疲れを感じたら早めに休むことを意識して。","温かい飲み物でほっとする時間を作って。","少し体を伸ばすだけでも気分転換になりそう。","今日は自分にかける言葉を少し優しくしてみて。","睡眠や休息をいつもより大切にするとよさそう。"]};
- const OPEN=["朝、窓を開けて空気を入れ替える","机やバッグの中を一か所だけ整える","お気に入りの飲み物をゆっくり味わう","『ありがとう』を一度多く伝える","5分だけ自分のための時間を作る","気になっていたことを一つだけ終わらせる","好きな香りを楽しむ","今日できたことを一つ数える","いつもより少しゆっくり歩く","鏡を見て笑顔を作ってみる"];
- function hash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
- function dateKey(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
- function score(seed,kind,base){return 58+((hash(seed+"|"+kind)+base*7)%38)}
- function stars(n){let x=Math.max(1,Math.min(5,Math.round((n-50)/10)));return "★".repeat(x)+"☆".repeat(5-x)}
- function pick(a,seed,k){return a[hash(seed+"|"+k)%a.length]}
- function signName(b){try{return tfySign2(b)}catch(e){let a=b.split('-').map(Number);return zodiac(a[1],a[2]).replace(/^.. /,'')}}
- function etoName(y){try{return tfyEto2(y)}catch(e){return eto(y).replace(/^.. /,'').replace('年','')}}
- function setText(id,v){let e=document.getElementById(id);if(e)e.textContent=v}
- function apply(){
-   let p=profile();if(!p||!p.birth)return;
-   let day=dateKey(), seed=p.birth+"|"+day, sign=signName(p.birth), et=etoName(+p.birth.slice(0,4));
-   let signBase=hash(sign)%7, etoBase=hash(et)%7;
-   let sc={love:score(seed,'love',signBase),work:score(seed,'work',etoBase),money:score(seed,'money',signBase+etoBase),health:score(seed,'health',signBase*2+etoBase)};
-   let overall=Math.round((sc.love+sc.work+sc.money+sc.health)/4);
-   let now=new Date();setText('fortuneDate',now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日');
-   setText('fortuneProfile',(p.name||'あなた')+'さん ・ '+sign+' ・ '+et+'年');
-   let os=document.getElementById('overallScore');if(os)os.innerHTML=overall+'<small>点</small>';setText('overallStars',stars(overall));
-   setText('fortuneText',pick(MAIN,seed,'main'));
-   [['love','Love'],['work','Work'],['money','Money'],['health','Health']].forEach(([k,K])=>{setText('fortune'+K,sc[k]+'点');setText('fortune'+K+'Stars',stars(sc[k]));setText('fortune'+K+'Advice',pick(ADV[k],seed,k+'adv'))});
-   setText('luckyColor',pick(COLORS,seed,'color'));setText('luckyNumber',String(1+(hash(seed+'|number')%9)));setText('luckyItem',pick(ITEMS,seed,'item'));setText('luckyDir',pick(DIRS,seed,'dir'));setText('luckyAdvice',pick(OPEN,seed,'open')+'と、今日の流れが少し整いそう。');
-   // ホームの4項目も同じ占い結果にそろえる
-   setText('love',sc.love+'点');setText('money',sc.money+'点');setText('heart',sc.health+'点');setText('action',sc.work+'点');
- }
- window.tfyApplyEnhanced=apply;window.tfyApplyFortuneV2=apply;
- document.addEventListener('click',function(e){if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(apply,10)});
- setTimeout(apply,250);
-})();
-</script>
-
-<script id="tfyRebuiltProfileBirthday">
-(function(){
-  function syncProfileEverywhere(){
-    let p=null;
-    try{p=JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){}
-    if(!p||!p.birth)return;
-    const a=p.birth.split("-").map(Number);
-    const z=typeof zodiac==="function"?zodiac(a[1],a[2]):"";
-    const e=typeof eto==="function"?eto(a[0]):"";
-    const pn=document.getElementById("profileName");
-    const pi=document.getElementById("profileInfo");
-    if(pn)pn.textContent=(p.name||"あなた")+" さん";
-    if(pi)pi.textContent=z+"　"+e;
-  }
-
-  const oldRender=window.render;
-  if(typeof oldRender==="function"){
-    window.render=function(){
-      const r=oldRender.apply(this,arguments);
-      syncProfileEverywhere();
-      return r;
-    };
-  }
-
-  const oldStart=window.startWelcome;
-  if(typeof oldStart==="function"){
-    window.startWelcome=function(){
-      const r=oldStart.apply(this,arguments);
-      setTimeout(function(){
-        syncProfileEverywhere();
-        tfyBirthdayDismissedThisOpen=false;
-        checkBirthdaySpecial();
-      },80);
-      return r;
-    };
-  }
-
-  // Birthday button: close exactly once and go Home.
-  document.addEventListener("click",function(ev){
-    const btn=ev.target.closest&&ev.target.closest("#birthdaySpecial .birthday-button");
-    if(!btn)return;
-    ev.preventDefault();
-    ev.stopPropagation();
-    ev.stopImmediatePropagation();
-    closeBirthdaySpecial();
-  },true);
-
-  // Navigation only changes pages; it must never reopen the birthday screen.
-  document.querySelectorAll("nav button").forEach(function(btn){
-    btn.addEventListener("click",function(){setTimeout(syncProfileEverywhere,0)},true);
-  });
-
-  if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",syncProfileEverywhere,{once:true});
-  }else{
-    syncProfileEverywhere();
-  }
-})();
-</script>
-
-</body></html>
+</script></body></html>
