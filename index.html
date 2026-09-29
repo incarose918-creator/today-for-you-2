@@ -1009,7 +1009,8 @@ function toggleDiaryLock(){
   const check=prompt("現在の暗証番号を入力してください。");
   if(check===null)return;
   if(check!==cur){alert("暗証番号が違います。");return}
-  const change=confirm("OK：暗証番号を変更\nキャンセル：ロックをOFF");
+  const change=confirm("OK：暗証番号を変更
+キャンセル：ロックをOFF");
   if(change){
     const a=prompt("新しい4桁の暗証番号を入力してください。");
     if(a===null)return;
@@ -1455,7 +1456,48 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome()},900)
  document.addEventListener("DOMContentLoaded",addPublicNote);
  setTimeout(addPublicNote,500);
 })();
-</script>\n<script id="tfyFortuneV2Script">\n(function(){\n const COLORS=["ローズピンク","アイボリー","ラベンダー","フォレストグリーン","シャンパンゴールド","スカイブルー","コーラル","パールホワイト","ネイビー","ミントグリーン","ボルドー","ベージュ"];\n const ITEMS=["ハンカチ","小さな鏡","お気に入りのペン","腕時計","花の写真","温かい飲み物","香りのアイテム","ノート","小さなポーチ","アクセサリー","本","お気に入りの靴"];\n const DIRS=["東","南東","南","南西","西","北西","北","北東"];\n const MAIN=["今日は、自分の感覚を信じることで流れが整いそう。急がず、心地よい方を選んで。","小さな一歩が運を動かす日。完璧を待つより、できることから始めると◎。","人との何気ない会話にヒントがありそう。やさしい言葉を意識してみて。","今日は整えるほど運が味方してくれそう。身の回りや予定を少し軽くしてみて。","がんばり過ぎないことも大切な選択。余白を作ると次に進む力が戻ってきそう。","うれしいことを素直に受け取る日。小さな幸せを見逃さないで。","迷ったときは、今の自分が安心できる方へ。落ち着いた判断が良い流れにつながります。","これまで続けてきたことに光が当たりそう。自分の積み重ねを認めてあげて。","新しいことより、今あるものを大切にすると運気が安定しそう。","少し視点を変えると、思っていたより簡単な答えが見つかるかも。"];\n const ADV={\n love:["自然体の笑顔が魅力を引き出す日。","相手の話をゆっくり聞くと距離が縮まりそう。","自分を大切にすることが良いご縁につながります。","素直な『ありがとう』が温かな流れを作りそう。","懐かしい人との会話に小さな幸運がありそう。","今日は無理に合わせず、自分の気持ちも大切に。"],\n work:["一つずつ丁寧に進めることが近道。","気になっていた小さな仕事を片づけると流れが良くなりそう。","確認を一度増やすと安心して進められます。","思いついたことをメモすると次の一歩が見えそう。","周りに頼ることで、かえってスムーズに進みそう。","まず5分だけ始めると勢いがつきそう。"],\n money:["買う前に一度考えると満足度の高い選択ができそう。","今日は財布や支出を整えると安心につながります。","持っているものを活かすと新しい価値が見つかりそう。","小さな節約より、納得できる使い方を意識して。","数字を落ち着いて確認すると良い判断につながりそう。","予定外の買い物は一晩考えてからでも遅くありません。"],\n health:["深呼吸して、心と体に小さな余白を。","疲れを感じたら早めに休むことを意識して。","温かい飲み物でほっとする時間を作って。","少し体を伸ばすだけでも気分転換になりそう。","今日は自分にかける言葉を少し優しくしてみて。","睡眠や休息をいつもより大切にするとよさそう。"]};\n const OPEN=["朝、窓を開けて空気を入れ替える","机やバッグの中を一か所だけ整える","お気に入りの飲み物をゆっくり味わう","『ありがとう』を一度多く伝える","5分だけ自分のための時間を作る","気になっていたことを一つだけ終わらせる","好きな香りを楽しむ","今日できたことを一つ数える","いつもより少しゆっくり歩く","鏡を見て笑顔を作ってみる"];\n function hash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}\n function dateKey(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}\n function score(seed,kind,base){return 58+((hash(seed+"|"+kind)+base*7)%38)}\n function stars(n){let x=Math.max(1,Math.min(5,Math.round((n-50)/10)));return "★".repeat(x)+"☆".repeat(5-x)}\n function pick(a,seed,k){return a[hash(seed+"|"+k)%a.length]}\n function signName(b){try{return tfySign2(b)}catch(e){let a=b.split('-').map(Number);return zodiac(a[1],a[2]).replace(/^.. /,'')}}\n function etoName(y){try{return tfyEto2(y)}catch(e){return eto(y).replace(/^.. /,'').replace('年','')}}\n function setText(id,v){let e=document.getElementById(id);if(e)e.textContent=v}\n function apply(){\n   let p=profile();if(!p||!p.birth)return;\n   let day=dateKey(), seed=p.birth+"|"+day, sign=signName(p.birth), et=etoName(+p.birth.slice(0,4));\n   let signBase=hash(sign)%7, etoBase=hash(et)%7;\n   let sc={love:score(seed,'love',signBase),work:score(seed,'work',etoBase),money:score(seed,'money',signBase+etoBase),health:score(seed,'health',signBase*2+etoBase)};\n   let overall=Math.round((sc.love+sc.work+sc.money+sc.health)/4);\n   let now=new Date();setText('fortuneDate',now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日');\n   setText('fortuneProfile',(p.name||'あなた')+'さん ・ '+sign+' ・ '+et+'年');\n   let os=document.getElementById('overallScore');if(os)os.innerHTML=overall+'<small>点</small>';setText('overallStars',stars(overall));\n   setText('fortuneText',pick(MAIN,seed,'main'));\n   [['love','Love'],['work','Work'],['money','Money'],['health','Health']].forEach(([k,K])=>{setText('fortune'+K,sc[k]+'点');setText('fortune'+K+'Stars',stars(sc[k]));setText('fortune'+K+'Advice',pick(ADV[k],seed,k+'adv'))});\n   setText('luckyColor',pick(COLORS,seed,'color'));setText('luckyNumber',String(1+(hash(seed+'|number')%9)));setText('luckyItem',pick(ITEMS,seed,'item'));setText('luckyDir',pick(DIRS,seed,'dir'));setText('luckyAdvice',pick(OPEN,seed,'open')+'と、今日の流れが少し整いそう。');\n   // ホームの4項目も同じ占い結果にそろえる\n   setText('love',sc.love+'点');setText('money',sc.money+'点');setText('heart',sc.health+'点');setText('action',sc.work+'点');\n }\n window.tfyApplyEnhanced=apply;window.tfyApplyFortuneV2=apply;\n document.addEventListener('click',function(e){if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(apply,10)});\n setTimeout(apply,250);\n})();\n</script>\n
+</script>
+<script id="tfyFortuneV2Script">
+(function(){
+ const COLORS=["ローズピンク","アイボリー","ラベンダー","フォレストグリーン","シャンパンゴールド","スカイブルー","コーラル","パールホワイト","ネイビー","ミントグリーン","ボルドー","ベージュ"];
+ const ITEMS=["ハンカチ","小さな鏡","お気に入りのペン","腕時計","花の写真","温かい飲み物","香りのアイテム","ノート","小さなポーチ","アクセサリー","本","お気に入りの靴"];
+ const DIRS=["東","南東","南","南西","西","北西","北","北東"];
+ const MAIN=["今日は、自分の感覚を信じることで流れが整いそう。急がず、心地よい方を選んで。","小さな一歩が運を動かす日。完璧を待つより、できることから始めると◎。","人との何気ない会話にヒントがありそう。やさしい言葉を意識してみて。","今日は整えるほど運が味方してくれそう。身の回りや予定を少し軽くしてみて。","がんばり過ぎないことも大切な選択。余白を作ると次に進む力が戻ってきそう。","うれしいことを素直に受け取る日。小さな幸せを見逃さないで。","迷ったときは、今の自分が安心できる方へ。落ち着いた判断が良い流れにつながります。","これまで続けてきたことに光が当たりそう。自分の積み重ねを認めてあげて。","新しいことより、今あるものを大切にすると運気が安定しそう。","少し視点を変えると、思っていたより簡単な答えが見つかるかも。"];
+ const ADV={
+ love:["自然体の笑顔が魅力を引き出す日。","相手の話をゆっくり聞くと距離が縮まりそう。","自分を大切にすることが良いご縁につながります。","素直な『ありがとう』が温かな流れを作りそう。","懐かしい人との会話に小さな幸運がありそう。","今日は無理に合わせず、自分の気持ちも大切に。"],
+ work:["一つずつ丁寧に進めることが近道。","気になっていた小さな仕事を片づけると流れが良くなりそう。","確認を一度増やすと安心して進められます。","思いついたことをメモすると次の一歩が見えそう。","周りに頼ることで、かえってスムーズに進みそう。","まず5分だけ始めると勢いがつきそう。"],
+ money:["買う前に一度考えると満足度の高い選択ができそう。","今日は財布や支出を整えると安心につながります。","持っているものを活かすと新しい価値が見つかりそう。","小さな節約より、納得できる使い方を意識して。","数字を落ち着いて確認すると良い判断につながりそう。","予定外の買い物は一晩考えてからでも遅くありません。"],
+ health:["深呼吸して、心と体に小さな余白を。","疲れを感じたら早めに休むことを意識して。","温かい飲み物でほっとする時間を作って。","少し体を伸ばすだけでも気分転換になりそう。","今日は自分にかける言葉を少し優しくしてみて。","睡眠や休息をいつもより大切にするとよさそう。"]};
+ const OPEN=["朝、窓を開けて空気を入れ替える","机やバッグの中を一か所だけ整える","お気に入りの飲み物をゆっくり味わう","『ありがとう』を一度多く伝える","5分だけ自分のための時間を作る","気になっていたことを一つだけ終わらせる","好きな香りを楽しむ","今日できたことを一つ数える","いつもより少しゆっくり歩く","鏡を見て笑顔を作ってみる"];
+ function hash(x){let h=2166136261;for(let i=0;i<x.length;i++){h^=x.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+ function dateKey(){let d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+ function score(seed,kind,base){return 58+((hash(seed+"|"+kind)+base*7)%38)}
+ function stars(n){let x=Math.max(1,Math.min(5,Math.round((n-50)/10)));return "★".repeat(x)+"☆".repeat(5-x)}
+ function pick(a,seed,k){return a[hash(seed+"|"+k)%a.length]}
+ function signName(b){try{return tfySign2(b)}catch(e){let a=b.split('-').map(Number);return zodiac(a[1],a[2]).replace(/^.. /,'')}}
+ function etoName(y){try{return tfyEto2(y)}catch(e){return eto(y).replace(/^.. /,'').replace('年','')}}
+ function setText(id,v){let e=document.getElementById(id);if(e)e.textContent=v}
+ function apply(){
+   let p=profile();if(!p||!p.birth)return;
+   let day=dateKey(), seed=p.birth+"|"+day, sign=signName(p.birth), et=etoName(+p.birth.slice(0,4));
+   let signBase=hash(sign)%7, etoBase=hash(et)%7;
+   let sc={love:score(seed,'love',signBase),work:score(seed,'work',etoBase),money:score(seed,'money',signBase+etoBase),health:score(seed,'health',signBase*2+etoBase)};
+   let overall=Math.round((sc.love+sc.work+sc.money+sc.health)/4);
+   let now=new Date();setText('fortuneDate',now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日');
+   setText('fortuneProfile',(p.name||'あなた')+'さん ・ '+sign+' ・ '+et+'年');
+   let os=document.getElementById('overallScore');if(os)os.innerHTML=overall+'<small>点</small>';setText('overallStars',stars(overall));
+   setText('fortuneText',pick(MAIN,seed,'main'));
+   [['love','Love'],['work','Work'],['money','Money'],['health','Health']].forEach(([k,K])=>{setText('fortune'+K,sc[k]+'点');setText('fortune'+K+'Stars',stars(sc[k]));setText('fortune'+K+'Advice',pick(ADV[k],seed,k+'adv'))});
+   setText('luckyColor',pick(COLORS,seed,'color'));setText('luckyNumber',String(1+(hash(seed+'|number')%9)));setText('luckyItem',pick(ITEMS,seed,'item'));setText('luckyDir',pick(DIRS,seed,'dir'));setText('luckyAdvice',pick(OPEN,seed,'open')+'と、今日の流れが少し整いそう。');
+   // ホームの4項目も同じ占い結果にそろえる
+   setText('love',sc.love+'点');setText('money',sc.money+'点');setText('heart',sc.health+'点');setText('action',sc.work+'点');
+ }
+ window.tfyApplyEnhanced=apply;window.tfyApplyFortuneV2=apply;
+ document.addEventListener('click',function(e){if(e.target.closest('nav button[data-page="fortune"]'))setTimeout(apply,10)});
+ setTimeout(apply,250);
+})();
+</script>
+
 <script id="tfyRebuiltProfileBirthday">
 (function(){
   function syncProfileEverywhere(){
