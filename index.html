@@ -1506,4 +1506,18 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
  document.addEventListener("DOMContentLoaded",init); document.addEventListener("click",e=>{if(e.target.closest('nav button[data-page="calendar"]'))setTimeout(()=>{render();renderEditor()},30)});
 })();
 </script>
+<script id="tfyBirthdaySafeHomePatch">
+/* Birthday screen safety patch: closing always returns to Home without touching other page logic. */
+(function(){
+  window.closeBirthdaySpecial=function(){
+    const box=document.getElementById("birthdaySpecial");
+    if(box) box.classList.remove("show");
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    const home=document.getElementById("home");
+    if(home) home.classList.add("active");
+    document.querySelectorAll("nav button[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page==="home"));
+    window.scrollTo(0,0);
+  };
+})();
+</script>
 </body></html>
