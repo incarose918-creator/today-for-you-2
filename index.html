@@ -1571,4 +1571,104 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
 })();
 </script>
 
+
+<script id="tfyProfileBirthdaySyncFinal">
+(function(){
+  function getProfile(){
+    let p=null;
+    try{p=JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){}
+    if(!p){try{p=JSON.parse(localStorage.getItem("tfy-profile")||"null")}catch(e){}}
+    return p;
+  }
+  function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v||""}
+  function zodiacInfo(birth){
+    if(!birth)return {sign:"",emoji:""};
+    const a=String(birth).split("-").map(Number),m=a[1],d=a[2];
+    const z=[
+      [120,"♑","山羊座"],[219,"♒","水瓶座"],[321,"♓","魚座"],[420,"♈","牡羊座"],
+      [521,"♉","牡牛座"],[622,"♊","双子座"],[723,"♋","蟹座"],[823,"♌","獅子座"],
+      [923,"♍","乙女座"],[1024,"♎","天秤座"],[1123,"♏","蠍座"],[1222,"♐","射手座"],[1232,"♑","山羊座"]
+    ];
+    const md=m*100+d;
+    for(const x of z)if(md<x[0])return {emoji:x[1],sign:x[2]};
+    return {emoji:"♑",sign:"山羊座"};
+  }
+  function etoInfo(birth){
+    if(!birth)return {eto:"",emoji:""};
+    const y=+String(birth).slice(0,4);
+    const names=["申年","酉年","戌年","亥年","子年","丑年","寅年","卯年","辰年","巳年","午年","未年"];
+    const emojis=["🐒","🐓","🐕","🐗","🐭","🐮","🐯","🐰","🐲","🐍","🐴","🐑"];
+    const i=((y-1968)%12+12)%12;
+    return {eto:names[i],emoji:emojis[i]};
+  }
+  function syncAll(){
+    const p=getProfile(); if(!p)return;
+    const z=zodiacInfo(p.birth),e=etoInfo(p.birth);
+    // Known profile labels in the current app and common duplicated variants.
+    const pairs={
+      "myName":p.name,"profileName":p.name,"homeName":p.name,
+      "myZodiac":z.emoji+" "+z.sign,"profileZodiac":z.emoji+" "+z.sign,
+      "myEto":e.emoji+" "+e.eto,"profileEto":e.emoji+" "+e.eto
+    };
+    Object.entries(pairs).forEach(([id,v])=>setText(id,v));
+    // Update visible profile text nodes that older app versions left stale.
+    document.querySelectorAll("#mypage .card, #myPage .card").forEach(card=>{
+      const t=card.textContent||"";
+      if(/さん|乙女座|天秤座|未年|申年/.test(t)){
+        card.querySelectorAll("*").forEach(el=>{
+          if(el.children.length) return;
+          const s=(el.textContent||"").trim();
+          if(/^.+さん$/.test(s) && !/こんにちは/.test(s)) el.textContent=p.name+"さん";
+          if(/座$/.test(s)) el.textContent=z.emoji+" "+z.sign;
+          if(/年$/.test(s) && /[鼠牛虎兎龍蛇馬羊猿鶏犬猪]|子年|丑年|寅年|卯年|辰年|巳年|午年|未年|申年|酉年|戌年|亥年/.test(s)) el.textContent=e.emoji+" "+e.eto;
+        });
+      }
+    });
+    // Refresh input fields when returning to settings.
+    const n=document.getElementById("setupName"); if(n)n.value=p.name||"";
+    const b=document.getElementById("setupBirth"); if(b)b.value=p.birth||"";
+  }
+  function birthParts(v){
+    const m=String(v||"").match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    return m?{month:+m[2],day:+m[3]}:null;
+  }
+  function birthdayCheck(){
+    const p=getProfile(), b=birthParts(p&&p.birth), now=new Date();
+    if(!p||!b||b.month!==now.getMonth()+1||b.day!==now.getDate())return false;
+    const box=document.getElementById("birthdaySpecial"),nm=document.getElementById("birthdayName"),msg=document.getElementById("birthdayMessage");
+    if(!box||!nm||!msg)return false;
+    nm.textContent=p.name||"あなた";
+    const pool=(typeof birthdayMessages!=="undefined"&&birthdayMessages.length)?birthdayMessages:[
+      "今日まで歩いてきたあなたへ。新しい一年が、やさしい光と小さな幸せに包まれますように。"
+    ];
+    msg.textContent=pool[now.getFullYear()%pool.length];
+    box.classList.add("show");
+    box.style.setProperty("display","flex","important");
+    document.body.style.overflow="hidden";
+    return true;
+  }
+  window.checkBirthdaySpecial=birthdayCheck;
+  const oldClose=window.closeBirthdaySpecial;
+  window.closeBirthdaySpecial=function(){
+    const box=document.getElementById("birthdaySpecial");
+    if(box){box.classList.remove("show");box.style.setProperty("display","none","important")}
+    document.body.style.overflow="";
+  };
+  function refresh(){syncAll();setTimeout(syncAll,80);setTimeout(birthdayCheck,150)}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refresh);else refresh();
+  window.addEventListener("pageshow",refresh);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()});
+  // Every navigation tap refreshes My Page from the single saved profile.
+  document.addEventListener("click",e=>{
+    if(e.target.closest("nav button")||e.target.closest("button"))setTimeout(refresh,120);
+  });
+  // Detect profile save even if an older save function is used.
+  const orig=Storage.prototype.setItem;
+  Storage.prototype.setItem=function(k,v){
+    orig.call(this,k,v);
+    if(k==="tfyProfile"||k==="tfy-profile")setTimeout(refresh,60);
+  };
+})();
+</script>
+
 </body></html>
