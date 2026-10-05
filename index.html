@@ -1481,46 +1481,23 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
 })();
 </script>
 
-\n\n<script id="tfyBirthdayMasterV8">
+\n\n\n<style id="tfyBirthdayV9Style">
+#birthdaySpecial .birthday-flower{display:none!important}
+#birthdaySpecial.show{display:flex!important;visibility:visible!important;pointer-events:auto!important;z-index:2147483647!important}
+</style>
+<script id="tfyBirthdayMasterV9">
 (function(){
-  const PROFILE_KEY='tfyProfile';
-  const DISMISS_PREFIX='tfyBirthdayDismissed:';
-  function readProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch(e){return null}}
-  function validDate(y,m,d){const x=new Date(y,m-1,d);return Number.isFinite(y)&&Number.isFinite(m)&&Number.isFinite(d)&&x.getFullYear()===y&&x.getMonth()===m-1&&x.getDate()===d}
-  function isBirthdayToday(p){if(!p||!p.birth)return false;const a=String(p.birth).split('-').map(Number),n=new Date();return a.length===3&&a[1]===n.getMonth()+1&&a[2]===n.getDate()}
-  function dismissKey(p){const n=new Date();return DISMISS_PREFIX+n.getFullYear()+':'+(p&&p.birth||'')}
-  function fillSettings(p){if(!p||!p.birth)return;const a=p.birth.split('-').map(Number);const n=document.getElementById('settingsName'),y=document.getElementById('settingsBirthY'),m=document.getElementById('settingsBirthM'),d=document.getElementById('settingsBirthD');if(n)n.value=p.name||'';if(y)y.value=a[0];if(m)m.value=a[1];if(d)d.value=a[2]}
-  function syncProfile(p){if(!p||!p.birth)return;const a=p.birth.split('-').map(Number);const pn=document.getElementById('profileName'),pi=document.getElementById('profileInfo');if(pn)pn.textContent=(p.name||'あなた')+' さん';if(pi&&typeof zodiac==='function'&&typeof eto==='function')pi.textContent=zodiac(a[1],a[2])+'　'+eto(a[0]);try{if(typeof render==='function')render()}catch(e){};try{if(typeof tfyIntegrateHome==='function')tfyIntegrateHome()}catch(e){}}
-  function home(){
-    const box=document.getElementById('birthdaySpecial');
-    if(box){box.classList.remove('show');box.style.setProperty('display','none','important');box.style.setProperty('visibility','hidden','important');box.style.setProperty('pointer-events','none','important');}
-    document.body.style.overflow='';
-    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-    const h=document.getElementById('home');if(h)h.classList.add('active');
-    document.querySelectorAll('nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page==='home'));
-    window.scrollTo(0,0);
-  }
-  window.closeBirthdaySpecial=function(){const p=readProfile();try{if(p)sessionStorage.setItem(dismissKey(p),'1')}catch(e){};home();return false};
-  window.checkBirthdaySpecial=function(force){
-    const p=readProfile(),box=document.getElementById('birthdaySpecial');if(!box)return false;
-    if(!isBirthdayToday(p)){home();return false}
-    try{if(!force&&sessionStorage.getItem(dismissKey(p))==='1')return false}catch(e){}
-    const bn=document.getElementById('birthdayName'),bm=document.getElementById('birthdayMessage');if(bn)bn.textContent=p.name||'あなた';
-    if(bm){const msgs=(typeof birthdayMessages!=='undefined'&&birthdayMessages.length)?birthdayMessages:['お誕生日おめでとうございます。新しい一年が、やさしい光と小さな幸せに包まれますように。'];let h=0,q=p.birth+'|'+new Date().getFullYear();for(let i=0;i<q.length;i++)h=((h<<5)-h+q.charCodeAt(i))|0;bm.textContent=msgs[Math.abs(h)%msgs.length]}
-    box.style.removeProperty('visibility');box.style.removeProperty('pointer-events');box.style.setProperty('display','flex','important');box.style.setProperty('visibility','visible','important');box.style.setProperty('pointer-events','auto','important');box.style.setProperty('z-index','2147483647','important');box.classList.add('show');document.body.style.overflow='hidden';return true;
-  };
-  window.saveProfileSettings=function(){
-    const N=document.getElementById('settingsName'),Y=document.getElementById('settingsBirthY'),M=document.getElementById('settingsBirthM'),D=document.getElementById('settingsBirthD');
-    const y=parseInt(Y&&Y.value,10),m=parseInt(M&&M.value,10),d=parseInt(D&&D.value,10),name=((N&&N.value)||'あなた').trim()||'あなた';
-    if(!validDate(y,m,d)){alert('正しい生年月日を入力してください');return}
-    const p={name:name,birth:String(y).padStart(4,'0')+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0')};
-    try{localStorage.setItem(PROFILE_KEY,JSON.stringify(p));localStorage.setItem('tfy-profile',JSON.stringify(p));sessionStorage.removeItem(dismissKey(p))}catch(e){alert('設定を保存できませんでした');return}
-    fillSettings(p);syncProfile(p);const st=document.getElementById('settingsSaved');if(st)st.textContent='保存しました 🌸';
-    if(isBirthdayToday(p))window.checkBirthdaySpecial(true);
-  };
-  function boot(){const p=readProfile();if(p){fillSettings(p);syncProfile(p)};setTimeout(function(){window.checkBirthdaySpecial(false)},120)}
+  let closingToHome=false;
+  function profile(){try{return JSON.parse(localStorage.getItem('tfyProfile')||localStorage.getItem('tfy-profile')||'null')}catch(e){return null}}
+  function todayBirthday(p){if(!p||!p.birth)return false;const a=String(p.birth).split('-').map(Number),n=new Date();return a.length===3&&a[1]===n.getMonth()+1&&a[2]===n.getDate()}
+  function fill(p){if(!p)return;const a=String(p.birth||'').split('-').map(Number);const bn=document.getElementById('birthdayName');if(bn)bn.textContent=p.name||'あなた';const bm=document.getElementById('birthdayMessage');if(bm)bm.textContent='お誕生日おめでとうございます。新しい一年が、やさしい光と小さな幸せに包まれますように。';}
+  function showBirthday(){const p=profile(),box=document.getElementById('birthdaySpecial');if(!box||!todayBirthday(p)||closingToHome)return false;fill(p);box.style.removeProperty('display');box.style.removeProperty('visibility');box.style.removeProperty('pointer-events');box.classList.add('show');document.body.style.overflow='hidden';return true}
+  function goHome(){const box=document.getElementById('birthdaySpecial');closingToHome=true;if(box){box.classList.remove('show');box.style.setProperty('display','none','important');box.style.setProperty('visibility','hidden','important');box.style.setProperty('pointer-events','none','important')}document.body.style.overflow='';document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));const h=document.getElementById('home');if(h)h.classList.add('active');document.querySelectorAll('nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page==='home'));window.scrollTo(0,0);setTimeout(()=>{closingToHome=false;if(box){box.style.removeProperty('display');box.style.removeProperty('visibility');box.style.removeProperty('pointer-events')}},400);return false}
+  window.closeBirthdaySpecial=goHome;
+  window.checkBirthdaySpecial=function(){return showBirthday()};
+  document.addEventListener('click',function(e){const close=e.target.closest&&e.target.closest('#birthdaySpecial .birthday-button');if(close){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();goHome();return}const home=e.target.closest&&e.target.closest('nav button[data-page="home"]');if(home&&todayBirthday(profile())&&!closingToHome){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();showBirthday()}},true);
+  function boot(){setTimeout(showBirthday,350)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   window.addEventListener('pageshow',boot);
-  document.addEventListener('click',function(e){const b=e.target.closest&&e.target.closest('#birthdaySpecial .birthday-button');if(b){e.preventDefault();e.stopImmediatePropagation();window.closeBirthdaySpecial()}},true);
 })();
-</script></body></html>
+</script>\n</body></html>
