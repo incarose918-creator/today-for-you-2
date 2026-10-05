@@ -1559,4 +1559,34 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
   else setTimeout(showPhotoBirthday,350);
 })();
 </script>
+
+<style id="tfyHomeKoyomiSummaryStyle">
+.tfy-home-koyomi{margin:14px 0 18px;padding:16px;border-radius:20px;background:rgba(255,255,255,.84);box-shadow:0 8px 24px rgba(88,67,76,.08);border:1px solid rgba(190,160,170,.18)}
+.tfy-home-koyomi-title{font-size:17px;font-weight:700;color:#66535c;margin-bottom:10px}.tfy-home-koyomi-date{font-size:12px;color:#9a858e;margin-left:6px;font-weight:400}
+.tfy-home-koyomi-tags{display:flex;flex-wrap:wrap;gap:8px}.tfy-home-koyomi-tag{padding:7px 10px;border-radius:999px;background:#fff7f7;color:#705d65;font-size:13px;border:1px solid #f0dfe3}
+.tfy-home-koyomi-moon{margin-top:10px;font-size:13px;line-height:1.65;color:#786a71}.tfy-home-koyomi-more{width:100%;margin-top:12px;border:0;border-radius:14px;padding:11px 12px;background:#d98b98;color:white;font-weight:700;font-size:14px}
+</style>
+<script id="tfyHomeKoyomiSummaryScript">
+(function(){
+ function build(){
+  var home=document.getElementById('home'); if(!home||typeof tfyCalendarFacts!=='function'||typeof tfyRokuyoAccurate!=='function')return;
+  var now=new Date(), f=tfyCalendarFacts(now), rok=tfyRokuyoAccurate(now)||'—', moon=(typeof tfyMoonIntegrated==='function'?tfyMoonIntegrated(now):null);
+  var tags=['📅 '+rok];
+  if(f.ichiryu)tags.push('🌱 一粒万倍日');
+  if(f.tensha)tags.push('☀️ 天赦日');
+  if(f.fujo)tags.push('⚠️ 不成就日');
+  if(f.kami)tags.push('⛩️ 神吉日');
+  if(f.k&&f.k.branch==='寅')tags.push('🐯 寅の日');
+  if(f.k&&f.k.branch==='巳')tags.push(f.k.name==='己巳'?'🐍 己巳の日':'🐍 巳の日');
+  var box=document.getElementById('tfyHomeKoyomiSummary');
+  if(!box){box=document.createElement('div');box.id='tfyHomeKoyomiSummary';box.className='tfy-home-koyomi';var anchor=home.querySelector('[data-tfy-integrated="1"]'); if(anchor)anchor.insertAdjacentElement('afterend',box); else home.insertBefore(box,home.firstChild);}
+  var mtxt=moon?(moon.i+' '+moon.p+'　月齢 約'+moon.a.toFixed(1)):'';
+  box.innerHTML='<div class="tfy-home-koyomi-title">今日の暦 <span class="tfy-home-koyomi-date">'+(now.getMonth()+1)+'月'+now.getDate()+'日</span></div><div class="tfy-home-koyomi-tags">'+tags.map(function(x){return '<span class="tfy-home-koyomi-tag">'+x+'</span>'}).join('')+'</div>'+(mtxt?'<div class="tfy-home-koyomi-moon">🌙 '+mtxt+'</div>':'')+'<button type="button" class="tfy-home-koyomi-more" onclick="tfyOpenKoyomi()">今日の暦を詳しく見る　›</button>';
+ }
+ document.addEventListener('DOMContentLoaded',function(){setTimeout(build,800)});
+ window.addEventListener('pageshow',function(){setTimeout(build,300)});
+ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('nav button[data-page="home"]');if(b)setTimeout(build,350)},true);
+ window.tfyBuildHomeKoyomiSummary=build;
+})();
+</script>
 </body></html>
