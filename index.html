@@ -1411,7 +1411,8 @@ checkBirthdaySpecial=function(force){
  if(!box||!bn||!bm)return;
  bn.textContent=p.name||"あなた";
  let h=0,q=p.birth+"|"+n.getFullYear();for(let c of q)h=((h<<5)-h+c.charCodeAt(0))|0;
- bm.textContent=birthdayMessages[Math.abs(h)%birthdayMessages.length];
+ const msgs=(typeof birthdayMessages!=="undefined" && birthdayMessages.length)?birthdayMessages:["お誕生日おめでとうございます。新しい一年が、やさしい光と小さな幸せに包まれますように。"];
+ bm.textContent=msgs[Math.abs(h)%msgs.length];
  box.classList.add("show");sessionStorage.setItem(key,"1");
 };
 function tfyClearBirthdayTestKeys(){
@@ -1557,10 +1558,21 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
     localStorage.setItem("tfyProfile",JSON.stringify({name:name,birth:birth}));
     localStorage.removeItem("tfy-profile");
     if(status)status.textContent="保存しました 🌸";
-    if(typeof render==="function")render();
-    if(typeof tfyIntegrateHome==="function"){setTimeout(tfyIntegrateHome,20);setTimeout(tfyIntegrateHome,180)}
-    if(typeof tfyClearBirthdayTestKeys==="function")tfyClearBirthdayTestKeys();
-    setTimeout(function(){if(typeof checkBirthdaySpecial==="function")checkBirthdaySpecial(true)},100);
+
+    // Update My Page immediately. Do not depend on the older render() function,
+    // because an error elsewhere in render() used to stop this save flow here.
+    const pn=document.getElementById("profileName"), pi=document.getElementById("profileInfo");
+    if(pn)pn.textContent=name+" さん";
+    if(pi)pi.textContent=zodiac(mm,dd)+"　"+eto(yy);
+
+    // Keep the old app refresh, but never allow it to block birthday handling.
+    try{if(typeof render==="function")render()}catch(e){console.warn("profile render skipped",e)}
+    try{if(typeof tfyIntegrateHome==="function"){setTimeout(tfyIntegrateHome,20);setTimeout(tfyIntegrateHome,180)}}catch(e){}
+
+    // A newly saved birthday equal to today must show immediately, even if it
+    // was already tested earlier in this browser session.
+    try{if(typeof tfyClearBirthdayTestKeys==="function")tfyClearBirthdayTestKeys()}catch(e){}
+    setTimeout(function(){try{if(typeof checkBirthdaySpecial==="function")checkBirthdaySpecial(true)}catch(e){console.warn("birthday refresh skipped",e)}},80);
   };
   document.addEventListener("DOMContentLoaded",window.loadProfileSettings);
   document.addEventListener("click",function(e){
