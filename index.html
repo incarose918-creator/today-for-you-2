@@ -1528,7 +1528,19 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
     v.innerHTML='<div style="width:min(100%,390px);text-align:center;color:#554148"><div style="font-family:Georgia,serif;color:#b57b16;font-size:30px;letter-spacing:.08em;margin-bottom:20px">Happy Birthday</div><div style="font-size:54px;margin-bottom:8px">🌼</div><div style="font-size:30px;font-weight:800;line-height:1.5;margin-bottom:18px">'+name+'さん<br>お誕生日<br>おめでとうございます</div><div style="background:rgba(255,255,255,.92);border:1px solid #ead4bd;border-radius:26px;padding:22px 20px;box-shadow:0 12px 35px rgba(124,83,45,.10)"><div style="font-size:16px;line-height:1.9;color:#6d565c">今日は、あなたが生まれた大切な日。<br>新しい一年が、やさしい光と小さな幸せに包まれますように。<br>あなたらしい一年になりますように 🌸</div><button id="tfyBirthdayV6Close" type="button" style="width:100%;margin-top:20px;border:0;border-radius:999px;padding:14px;background:linear-gradient(90deg,#dc8e94,#d67b8b);color:white;font-size:16px;font-weight:700">今日のあなたへ 🌸</button></div></div>';
     document.body.appendChild(v);
     document.body.style.overflow='hidden';
-    document.getElementById('tfyBirthdayV6Close').onclick=function(){v.remove();document.body.style.overflow='';document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));const h=document.getElementById('home');if(h)h.classList.add('active');document.querySelectorAll('nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page==='home'));window.scrollTo(0,0)};
+    document.getElementById('tfyBirthdayV6Close').onclick=function(e){
+      if(e){e.preventDefault();e.stopPropagation();}
+      try{sessionStorage.setItem('tfyBirthdayDismissedToday',new Date().toDateString())}catch(_e){}
+      const legacy=document.getElementById('birthdaySpecial');
+      if(legacy){legacy.classList.remove('show');legacy.style.setProperty('display','none','important');}
+      v.remove();
+      document.body.style.overflow='';
+      document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+      const h=document.getElementById('home');if(h)h.classList.add('active');
+      document.querySelectorAll('nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page==='home'));
+      window.scrollTo(0,0);
+      return false;
+    };
     return true;
   }
   // Replace profile save completely; do not depend on any older birthday code.
@@ -1539,6 +1551,7 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
     if(!Number.isFinite(y)||!Number.isFinite(m)||!Number.isFinite(d)||chk.getFullYear()!==y||chk.getMonth()!==m-1||chk.getDate()!==d){alert('正しい生年月日を入力してください');return;}
     const birth=String(y).padStart(4,'0')+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     const p={name,birth};
+    try{sessionStorage.removeItem('tfyBirthdayDismissedToday')}catch(_e){}
     try{localStorage.setItem(KEY,JSON.stringify(p));localStorage.removeItem('tfy-profile')}catch(e){alert('設定を保存できませんでした');return;}
     const pn=document.getElementById('profileName'),pi=document.getElementById('profileInfo'),st=document.getElementById('settingsSaved');
     if(pn)pn.textContent=name+' さん';
@@ -1548,7 +1561,10 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
     // This call is synchronous: the birthday screen appears before the save handler ends.
     hardBirthday(p);
   };
-  function boot(){const p=readProfile();if(p&&isToday(p.birth))hardBirthday(p)}
+  function boot(){
+    try{if(sessionStorage.getItem('tfyBirthdayDismissedToday')===new Date().toDateString())return}catch(_e){}
+    const p=readProfile();if(p&&isToday(p.birth))hardBirthday(p)
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,50));else setTimeout(boot,50);
   window.addEventListener('pageshow',()=>setTimeout(boot,80));
 })();
