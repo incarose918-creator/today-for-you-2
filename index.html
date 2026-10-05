@@ -1510,4 +1510,46 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
  function boot(){const p=getProfile();if(p){fillSettings(p);updateCard(p);try{if(typeof render==='function')render()}catch(e){}}setTimeout(showBirthday,120)}
  document.addEventListener('DOMContentLoaded',boot);window.addEventListener('load',boot);window.addEventListener('pageshow',boot);document.addEventListener('visibilitychange',function(){if(!document.hidden)boot()});document.addEventListener('click',function(e){const b=e.target.closest&&e.target.closest('nav button[data-page]');if(!b)return;setTimeout(function(){const p=getProfile();if(p){fillSettings(p);updateCard(p)}if(b.dataset.page==='home')showBirthday()},30)},true);
 })();
-</script></body></html>
+</script>\n<script id="tfyBirthdayHardFixV6">
+(function(){
+  const KEY='tfyProfile';
+  function readProfile(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}
+  function isToday(birth){
+    if(!birth)return false;
+    const a=String(birth).split('-').map(Number), n=new Date();
+    return a.length===3 && a[1]===n.getMonth()+1 && a[2]===n.getDate();
+  }
+  function hardBirthday(p){
+    if(!p || !isToday(p.birth)) return false;
+    let old=document.getElementById('tfyBirthdayV6'); if(old) old.remove();
+    const v=document.createElement('div'); v.id='tfyBirthdayV6';
+    v.style.cssText='position:fixed!important;inset:0!important;z-index:2147483647!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:auto!important;background:linear-gradient(180deg,#fff8e9,#fff4e9 55%,#fffaf5)!important;padding:calc(env(safe-area-inset-top) + 24px) 22px calc(env(safe-area-inset-bottom) + 26px)!important;';
+    const name=(p.name||'あなた').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});
+    v.innerHTML='<div style="width:min(100%,390px);text-align:center;color:#554148"><div style="font-family:Georgia,serif;color:#b57b16;font-size:30px;letter-spacing:.08em;margin-bottom:20px">Happy Birthday</div><div style="font-size:54px;margin-bottom:8px">🌼</div><div style="font-size:30px;font-weight:800;line-height:1.5;margin-bottom:18px">'+name+'さん<br>お誕生日<br>おめでとうございます</div><div style="background:rgba(255,255,255,.92);border:1px solid #ead4bd;border-radius:26px;padding:22px 20px;box-shadow:0 12px 35px rgba(124,83,45,.10)"><div style="font-size:16px;line-height:1.9;color:#6d565c">今日は、あなたが生まれた大切な日。<br>新しい一年が、やさしい光と小さな幸せに包まれますように。<br>あなたらしい一年になりますように 🌸</div><button id="tfyBirthdayV6Close" type="button" style="width:100%;margin-top:20px;border:0;border-radius:999px;padding:14px;background:linear-gradient(90deg,#dc8e94,#d67b8b);color:white;font-size:16px;font-weight:700">今日のあなたへ 🌸</button></div></div>';
+    document.body.appendChild(v);
+    document.body.style.overflow='hidden';
+    document.getElementById('tfyBirthdayV6Close').onclick=function(){v.remove();document.body.style.overflow='';document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));const h=document.getElementById('home');if(h)h.classList.add('active');document.querySelectorAll('nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page==='home'));window.scrollTo(0,0)};
+    return true;
+  }
+  // Replace profile save completely; do not depend on any older birthday code.
+  window.saveProfileSettings=function(){
+    const N=document.getElementById('settingsName'),Y=document.getElementById('settingsBirthY'),M=document.getElementById('settingsBirthM'),D=document.getElementById('settingsBirthD');
+    const y=parseInt(Y&&Y.value,10),m=parseInt(M&&M.value,10),d=parseInt(D&&D.value,10),name=((N&&N.value)||'あなた').trim()||'あなた';
+    const chk=new Date(y,m-1,d);
+    if(!Number.isFinite(y)||!Number.isFinite(m)||!Number.isFinite(d)||chk.getFullYear()!==y||chk.getMonth()!==m-1||chk.getDate()!==d){alert('正しい生年月日を入力してください');return;}
+    const birth=String(y).padStart(4,'0')+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const p={name,birth};
+    try{localStorage.setItem(KEY,JSON.stringify(p));localStorage.removeItem('tfy-profile')}catch(e){alert('設定を保存できませんでした');return;}
+    const pn=document.getElementById('profileName'),pi=document.getElementById('profileInfo'),st=document.getElementById('settingsSaved');
+    if(pn)pn.textContent=name+' さん';
+    if(pi&&typeof zodiac==='function'&&typeof eto==='function')pi.textContent=zodiac(m,d)+'　'+eto(y);
+    if(st)st.textContent='保存しました 🌸';
+    try{if(typeof render==='function')render()}catch(e){}
+    // This call is synchronous: the birthday screen appears before the save handler ends.
+    hardBirthday(p);
+  };
+  function boot(){const p=readProfile();if(p&&isToday(p.birth))hardBirthday(p)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,50));else setTimeout(boot,50);
+  window.addEventListener('pageshow',()=>setTimeout(boot,80));
+})();
+</script>\n</body></html>
