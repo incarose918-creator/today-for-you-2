@@ -418,7 +418,19 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 <section id="mypage" class="page">
 <header><div class="eyebrow">TODAY FOR YOU</div><div class="title">マイページ</div></header>
 <div class="card"><h3 id="profileName" style="margin:0 0 10px">えみ さん</h3><p id="profileInfo">♍ 乙女座　🐑 未年</p><p class="muted">今日もよくがんばりました。あなたは、ちゃんと前に進んでいます。</p></div>
-<div class="card"><button class="btn" onclick="resetSetup()">設定をやり直す</button></div>
+<div class="card">
+  <h3 style="margin:0 0 10px">⚙️ プロフィール設定</h3>
+  <label for="settingsName" style="display:block;font-weight:700;margin:10px 0 7px">ニックネーム</label>
+  <input id="settingsName" type="text" maxlength="20" placeholder="例：さくら">
+  <label style="display:block;font-weight:700;margin:16px 0 7px">生年月日</label>
+  <div class="birth-direct">
+    <input id="settingsBirthY" type="number" inputmode="numeric" placeholder="1900" min="1900" max="2100"><span>年</span>
+    <input id="settingsBirthM" type="number" inputmode="numeric" placeholder="1" min="1" max="12"><span>月</span>
+    <input id="settingsBirthD" type="number" inputmode="numeric" placeholder="1" min="1" max="31"><span>日</span>
+  </div>
+  <button class="btn" style="margin-top:16px" type="button" onclick="saveProfileSettings()">変更を保存</button>
+  <p id="settingsSaved" class="muted" style="margin-bottom:0"></p>
+</div>
 
 <div class="card">
   <h3 style="margin:0 0 10px">🖼️ ホーム写真</h3>
@@ -1518,6 +1530,44 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
     document.querySelectorAll("nav button[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page==="home"));
     window.scrollTo(0,0);
   };
+})();
+</script>
+
+<script id="tfyProfileSettingsFix">
+/* One canonical profile editor + birthday refresh. */
+(function(){
+  function readProfile(){
+    try{return JSON.parse(localStorage.getItem("tfyProfile")||localStorage.getItem("tfy-profile")||"null")}catch(e){return null}
+  }
+  function validDate(y,m,d){
+    const dt=new Date(y,m-1,d);
+    return dt.getFullYear()===y && dt.getMonth()===m-1 && dt.getDate()===d;
+  }
+  window.loadProfileSettings=function(){
+    const p=readProfile(); if(!p||!p.birth)return;
+    const a=p.birth.split("-").map(Number);
+    const n=document.getElementById("settingsName"),y=document.getElementById("settingsBirthY"),m=document.getElementById("settingsBirthM"),d=document.getElementById("settingsBirthD");
+    if(n)n.value=p.name||""; if(y)y.value=a[0]||""; if(m)m.value=a[1]||""; if(d)d.value=a[2]||"";
+  };
+  window.saveProfileSettings=function(){
+    const n=document.getElementById("settingsName"),y=document.getElementById("settingsBirthY"),m=document.getElementById("settingsBirthM"),d=document.getElementById("settingsBirthD"),status=document.getElementById("settingsSaved");
+    const name=(n&&n.value.trim())||"あなた", yy=Number(y&&y.value),mm=Number(m&&m.value),dd=Number(d&&d.value);
+    if(!yy||!mm||!dd||!validDate(yy,mm,dd)){alert("正しい生年月日を入力してください");return}
+    const birth=String(yy).padStart(4,"0")+"-"+String(mm).padStart(2,"0")+"-"+String(dd).padStart(2,"0");
+    localStorage.setItem("tfyProfile",JSON.stringify({name:name,birth:birth}));
+    localStorage.removeItem("tfy-profile");
+    if(status)status.textContent="保存しました 🌸";
+    if(typeof render==="function")render();
+    if(typeof tfyIntegrateHome==="function"){setTimeout(tfyIntegrateHome,20);setTimeout(tfyIntegrateHome,180)}
+    if(typeof tfyClearBirthdayTestKeys==="function")tfyClearBirthdayTestKeys();
+    setTimeout(function(){if(typeof checkBirthdaySpecial==="function")checkBirthdaySpecial(true)},100);
+  };
+  document.addEventListener("DOMContentLoaded",window.loadProfileSettings);
+  document.addEventListener("click",function(e){
+    const b=e.target.closest&&e.target.closest('nav button[data-page="mypage"]');
+    if(b)setTimeout(window.loadProfileSettings,20);
+  });
+  setTimeout(window.loadProfileSettings,300);
 })();
 </script>
 </body></html>
