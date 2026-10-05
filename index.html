@@ -1582,4 +1582,77 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
   setTimeout(window.loadProfileSettings,300);
 })();
 </script>
-\n<script id="tfyBirthdayDirectFixV3">\n(function(){\n  function profile(){try{return JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){return null}}\n  function isTodayBirthday(p){\n    if(!p||!p.birth)return false;\n    var a=String(p.birth).split("-").map(Number), now=new Date();\n    return a.length===3 && a[1]===now.getMonth()+1 && a[2]===now.getDate();\n  }\n  function showBirthdayDirect(){\n    var p=profile(); if(!isTodayBirthday(p))return false;\n    var box=document.getElementById("birthdaySpecial"), name=document.getElementById("birthdayName"), msg=document.getElementById("birthdayMessage");\n    if(!box)return false;\n    if(name)name.textContent=p.name||"あなた";\n    if(msg){\n      var list=(window.birthdayMessages&&window.birthdayMessages.length)?window.birthdayMessages:["今日まで歩いてきたあなたへ。新しい一年が、やさしい光と小さな幸せに包まれますように。今日から始まる一年も、あなたらしく。"];\n      var h=0,q=String(p.birth)+"|"+(new Date().getFullYear()); for(var i=0;i<q.length;i++)h=((h<<5)-h+q.charCodeAt(i))|0;\n      msg.textContent=list[Math.abs(h)%list.length];\n    }\n    box.style.display="flex"; box.style.alignItems="center"; box.style.justifyContent="center"; box.classList.add("show");\n    return true;\n  }\n  window.tfyShowBirthdayDirect=showBirthdayDirect;\n  var oldSave=window.saveProfileSettings;\n  if(typeof oldSave==="function") window.saveProfileSettings=function(){\n    oldSave.apply(this,arguments);\n    setTimeout(showBirthdayDirect,30);\n    setTimeout(showBirthdayDirect,250);\n  };\n  window.addEventListener("load",function(){setTimeout(showBirthdayDirect,500)});\n  window.addEventListener("pageshow",function(){setTimeout(showBirthdayDirect,250)});\n})();\n</script>\n</body></html>
+\n<script id="tfyBirthdayDirectFixV3">\n(function(){\n  function profile(){try{return JSON.parse(localStorage.getItem("tfyProfile")||"null")}catch(e){return null}}\n  function isTodayBirthday(p){\n    if(!p||!p.birth)return false;\n    var a=String(p.birth).split("-").map(Number), now=new Date();\n    return a.length===3 && a[1]===now.getMonth()+1 && a[2]===now.getDate();\n  }\n  function showBirthdayDirect(){\n    var p=profile(); if(!isTodayBirthday(p))return false;\n    var box=document.getElementById("birthdaySpecial"), name=document.getElementById("birthdayName"), msg=document.getElementById("birthdayMessage");\n    if(!box)return false;\n    if(name)name.textContent=p.name||"あなた";\n    if(msg){\n      var list=(window.birthdayMessages&&window.birthdayMessages.length)?window.birthdayMessages:["今日まで歩いてきたあなたへ。新しい一年が、やさしい光と小さな幸せに包まれますように。今日から始まる一年も、あなたらしく。"];\n      var h=0,q=String(p.birth)+"|"+(new Date().getFullYear()); for(var i=0;i<q.length;i++)h=((h<<5)-h+q.charCodeAt(i))|0;\n      msg.textContent=list[Math.abs(h)%list.length];\n    }\n    box.style.display="flex"; box.style.alignItems="center"; box.style.justifyContent="center"; box.classList.add("show");\n    return true;\n  }\n  window.tfyShowBirthdayDirect=showBirthdayDirect;\n  var oldSave=window.saveProfileSettings;\n  if(typeof oldSave==="function") window.saveProfileSettings=function(){\n    oldSave.apply(this,arguments);\n    setTimeout(showBirthdayDirect,30);\n    setTimeout(showBirthdayDirect,250);\n  };\n  window.addEventListener("load",function(){setTimeout(showBirthdayDirect,500)});\n  window.addEventListener("pageshow",function(){setTimeout(showBirthdayDirect,250)});\n})();\n</script>\n<script id="tfyFinalProfileBirthdayFixV4">
+(function(){
+  const MAIN='tfyProfile', BACKUP='tfyProfileBackupV4', NAME='tfyProfileNameV4', BIRTH='tfyProfileBirthV4';
+  function parse(v){try{return JSON.parse(v||'null')}catch(e){return null}}
+  function valid(p){return p&&typeof p.name==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(String(p.birth||''))}
+  function read(){
+    const a=parse(localStorage.getItem(MAIN)), b=parse(localStorage.getItem(BACKUP));
+    let p=null;
+    if(valid(a)&&valid(b)) p=(Number(b.updatedAt||0)>Number(a.updatedAt||0))?b:a;
+    else p=valid(a)?a:(valid(b)?b:null);
+    const n=localStorage.getItem(NAME), d=localStorage.getItem(BIRTH);
+    if(n&&/^\d{4}-\d{2}-\d{2}$/.test(d||'')){
+      const stamp=Number(localStorage.getItem('tfyProfileStampV4')||0);
+      if(!p||stamp>Number(p.updatedAt||0)) p={name:n,birth:d,updatedAt:stamp};
+    }
+    if(valid(p)){
+      localStorage.setItem(MAIN,JSON.stringify(p));
+      localStorage.setItem(BACKUP,JSON.stringify(p));
+      return p;
+    }
+    return null;
+  }
+  function write(name,birth){
+    const p={name:(name||'あなた').trim()||'あなた',birth:birth,updatedAt:Date.now()};
+    const j=JSON.stringify(p);
+    localStorage.setItem(MAIN,j); localStorage.setItem(BACKUP,j);
+    localStorage.setItem(NAME,p.name); localStorage.setItem(BIRTH,p.birth);
+    localStorage.setItem('tfyProfileStampV4',String(p.updatedAt));
+    localStorage.removeItem('tfy-profile');
+    return p;
+  }
+  function dateOK(y,m,d){const x=new Date(y,m-1,d);return x.getFullYear()===y&&x.getMonth()===m-1&&x.getDate()===d}
+  function updateEverywhere(p){
+    if(!valid(p))return;
+    const [y,m,d]=p.birth.split('-').map(Number);
+    const pn=document.getElementById('profileName'),pi=document.getElementById('profileInfo');
+    if(pn)pn.textContent=p.name+' さん'; if(pi)pi.textContent=zodiac(m,d)+'　'+eto(y);
+    const sn=document.getElementById('settingsName'),sy=document.getElementById('settingsBirthY'),sm=document.getElementById('settingsBirthM'),sd=document.getElementById('settingsBirthD');
+    if(sn)sn.value=p.name;if(sy)sy.value=y;if(sm)sm.value=m;if(sd)sd.value=d;
+    try{render()}catch(e){}
+    try{if(typeof tfyIntegrateHome==='function')tfyIntegrateHome()}catch(e){}
+  }
+  function isBirthday(p){if(!valid(p))return false;const a=p.birth.split('-').map(Number),n=new Date();return a[1]===n.getMonth()+1&&a[2]===n.getDate()}
+  function showBirthday(force){
+    const p=read(); if(!isBirthday(p))return false;
+    const box=document.getElementById('birthdaySpecial'); if(!box)return false;
+    const bn=document.getElementById('birthdayName'),bm=document.getElementById('birthdayMessage');
+    if(bn)bn.textContent=p.name||'あなた';
+    if(bm){const list=(typeof birthdayMessages!=='undefined'&&birthdayMessages.length)?birthdayMessages:['お誕生日おめでとうございます。新しい一年が、やさしい光と小さな幸せに包まれますように。'];let h=0,q=p.birth+'|'+new Date().getFullYear();for(const c of q)h=((h<<5)-h+c.charCodeAt(0))|0;bm.textContent=list[Math.abs(h)%list.length]}
+    box.classList.add('show');box.style.setProperty('display','flex','important');box.style.alignItems='center';box.style.justifyContent='center';
+    return true;
+  }
+  window.tfyReadProfileFinal=read; window.tfyShowBirthdayFinal=showBirthday;
+  window.loadProfileSettings=function(){const p=read();if(p)updateEverywhere(p)};
+  window.saveProfileSettings=function(){
+    const n=document.getElementById('settingsName'),Y=document.getElementById('settingsBirthY'),M=document.getElementById('settingsBirthM'),D=document.getElementById('settingsBirthD');
+    const y=Number(Y&&Y.value),m=Number(M&&M.value),d=Number(D&&D.value);
+    if(!y||!m||!d||!dateOK(y,m,d)){alert('正しい生年月日を入力してください');return}
+    const birth=String(y).padStart(4,'0')+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const p=write((n&&n.value)||'あなた',birth); updateEverywhere(p);
+    const st=document.getElementById('settingsSaved');if(st)st.textContent='保存しました 🌸';
+    setTimeout(()=>showBirthday(true),60);
+  };
+  function boot(){const p=read();if(p)updateEverywhere(p);setTimeout(()=>showBirthday(false),180)}
+  document.addEventListener('DOMContentLoaded',boot);
+  window.addEventListener('load',boot); window.addEventListener('pageshow',boot);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)boot()});
+  document.addEventListener('click',function(e){
+    const b=e.target.closest&&e.target.closest('nav button[data-page]');if(!b)return;
+    setTimeout(()=>{const p=read();if(p)updateEverywhere(p);if(b.dataset.page==='home')showBirthday(true);if(b.dataset.page==='mypage'&&p)updateEverywhere(p)},40);
+  },true);
+})();
+</script>
+</body></html>
