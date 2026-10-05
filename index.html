@@ -456,6 +456,7 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 <span class="version-chip">Version 1.0</span>
 </div>
 </section></div>
+
 <section class="page" id="aboutApp">
 <header><div class="eyebrow">TODAY FOR YOU</div><div class="title">このアプリについて</div></header>
 <div class="legal-wrap">
@@ -524,6 +525,7 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 </div>
 </div>
 </section>
+
 <nav>
 <button class="active" data-page="home"><b>🌸</b>ホーム</button>
 <button data-page="calendar"><b>📅</b>カレンダー</button>
@@ -1480,24 +1482,81 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
  document.addEventListener("DOMContentLoaded",init); document.addEventListener("click",e=>{if(e.target.closest('nav button[data-page="calendar"]'))setTimeout(()=>{render();renderEditor()},30)});
 })();
 </script>
-
-\n\n\n<style id="tfyBirthdayV9Style">
-#birthdaySpecial .birthday-flower{display:none!important}
-#birthdaySpecial.show{display:flex!important;visibility:visible!important;pointer-events:auto!important;z-index:2147483647!important}
-</style>
-<script id="tfyBirthdayMasterV9">
+<script id="tfyBirthdaySafeHomePatch">
+/* Birthday screen safety patch: closing always returns to Home without touching other page logic. */
 (function(){
-  let closingToHome=false;
-  function profile(){try{return JSON.parse(localStorage.getItem('tfyProfile')||localStorage.getItem('tfy-profile')||'null')}catch(e){return null}}
-  function todayBirthday(p){if(!p||!p.birth)return false;const a=String(p.birth).split('-').map(Number),n=new Date();return a.length===3&&a[1]===n.getMonth()+1&&a[2]===n.getDate()}
-  function fill(p){if(!p)return;const a=String(p.birth||'').split('-').map(Number);const bn=document.getElementById('birthdayName');if(bn)bn.textContent=p.name||'あなた';const bm=document.getElementById('birthdayMessage');if(bm)bm.textContent='お誕生日おめでとうございます。新しい一年が、やさしい光と小さな幸せに包まれますように。';}
-  function showBirthday(){const p=profile(),box=document.getElementById('birthdaySpecial');if(!box||!todayBirthday(p)||closingToHome)return false;fill(p);box.style.removeProperty('display');box.style.removeProperty('visibility');box.style.removeProperty('pointer-events');box.classList.add('show');document.body.style.overflow='hidden';return true}
-  function goHome(){const box=document.getElementById('birthdaySpecial');closingToHome=true;if(box){box.classList.remove('show');box.style.setProperty('display','none','important');box.style.setProperty('visibility','hidden','important');box.style.setProperty('pointer-events','none','important')}document.body.style.overflow='';document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));const h=document.getElementById('home');if(h)h.classList.add('active');document.querySelectorAll('nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page==='home'));window.scrollTo(0,0);setTimeout(()=>{closingToHome=false;if(box){box.style.removeProperty('display');box.style.removeProperty('visibility');box.style.removeProperty('pointer-events')}},400);return false}
-  window.closeBirthdaySpecial=goHome;
-  window.checkBirthdaySpecial=function(){return showBirthday()};
-  document.addEventListener('click',function(e){const close=e.target.closest&&e.target.closest('#birthdaySpecial .birthday-button');if(close){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();goHome();return}const home=e.target.closest&&e.target.closest('nav button[data-page="home"]');if(home&&todayBirthday(profile())&&!closingToHome){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();showBirthday()}},true);
-  function boot(){setTimeout(showBirthday,350)}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-  window.addEventListener('pageshow',boot);
+  window.closeBirthdaySpecial=function(){
+    const box=document.getElementById("birthdaySpecial");
+    if(box) box.classList.remove("show");
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    const home=document.getElementById("home");
+    if(home) home.classList.add("active");
+    document.querySelectorAll("nav button[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page==="home"));
+    window.scrollTo(0,0);
+  };
 })();
-</script>\n</body></html>
+</script>
+
+<script id="tfyBirthdayProfileFixV5">
+(function(){
+ const KEY='tfyProfile';
+ function getProfile(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}
+ function validDate(y,m,d){const x=new Date(y,m-1,d);return x.getFullYear()===y&&x.getMonth()===m-1&&x.getDate()===d}
+ function todayBirthday(p){if(!p||!p.birth)return false;const a=String(p.birth).split('-').map(Number),n=new Date();return a[1]===n.getMonth()+1&&a[2]===n.getDate()}
+ function fillSettings(p){if(!p||!p.birth)return;const a=p.birth.split('-').map(Number),n=document.getElementById('settingsName'),y=document.getElementById('settingsBirthY'),m=document.getElementById('settingsBirthM'),d=document.getElementById('settingsBirthD');if(n)n.value=p.name||'';if(y)y.value=a[0];if(m)m.value=a[1];if(d)d.value=a[2]}
+ function updateCard(p){if(!p||!p.birth)return;const a=p.birth.split('-').map(Number),pn=document.getElementById('profileName'),pi=document.getElementById('profileInfo');if(pn)pn.textContent=(p.name||'あなた')+' さん';if(pi&&typeof zodiac==='function'&&typeof eto==='function')pi.textContent=zodiac(a[1],a[2])+'　'+eto(a[0])}
+ function showBirthday(){const p=getProfile();if(!todayBirthday(p))return false;const box=document.getElementById('birthdaySpecial');if(!box)return false;const bn=document.getElementById('birthdayName'),bm=document.getElementById('birthdayMessage');if(bn)bn.textContent=p.name||'あなた';if(bm){const list=(window.birthdayMessages&&window.birthdayMessages.length)?window.birthdayMessages:['お誕生日おめでとうございます。新しい一年が、やさしい光と小さな幸せに包まれますように。'];let h=0,q=p.birth+'|'+new Date().getFullYear();for(let i=0;i<q.length;i++)h=((h<<5)-h+q.charCodeAt(i))|0;bm.textContent=list[Math.abs(h)%list.length]}box.classList.add('show');box.style.setProperty('display','flex','important');box.style.setProperty('visibility','visible','important');box.style.setProperty('opacity','1','important');box.style.setProperty('z-index','99999','important');box.style.alignItems='center';box.style.justifyContent='center';return true}
+ window.saveProfileSettings=function(){const N=document.getElementById('settingsName'),Y=document.getElementById('settingsBirthY'),M=document.getElementById('settingsBirthM'),D=document.getElementById('settingsBirthD'),y=Number(Y&&Y.value),m=Number(M&&M.value),d=Number(D&&D.value),name=((N&&N.value)||'あなた').trim()||'あなた';if(!validDate(y,m,d)){alert('正しい生年月日を入力してください');return}const birth=String(y).padStart(4,'0')+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0'),p={name:name,birth:birth};localStorage.setItem(KEY,JSON.stringify(p));localStorage.removeItem('tfy-profile');fillSettings(p);updateCard(p);const st=document.getElementById('settingsSaved');if(st)st.textContent='保存しました 🌸';if(showBirthday())return;try{if(typeof render==='function')render()}catch(e){}};
+ function boot(){const p=getProfile();if(p){fillSettings(p);updateCard(p);try{if(typeof render==='function')render()}catch(e){}}setTimeout(showBirthday,120)}
+ document.addEventListener('DOMContentLoaded',boot);window.addEventListener('load',boot);window.addEventListener('pageshow',boot);document.addEventListener('visibilitychange',function(){if(!document.hidden)boot()});document.addEventListener('click',function(e){const b=e.target.closest&&e.target.closest('nav button[data-page]');if(!b)return;setTimeout(function(){const p=getProfile();if(p){fillSettings(p);updateCard(p)}if(b.dataset.page==='home')showBirthday()},30)},true);
+})();
+</script>\n<script id="tfyBirthdayPhotoControllerFinal">
+(function(){
+  function profile(){try{return JSON.parse(localStorage.getItem('tfyProfile')||'null')}catch(e){return null}}
+  function birthdayToday(p){
+    if(!p||!p.birth)return false;
+    var a=String(p.birth).split('-').map(Number), n=new Date();
+    return a[1]===n.getMonth()+1 && a[2]===n.getDate();
+  }
+  function goHome(){
+    var box=document.getElementById('birthdaySpecial');
+    if(box){
+      box.classList.remove('show');
+      box.style.removeProperty('display');
+      box.style.removeProperty('visibility');
+      box.style.removeProperty('opacity');
+      box.style.removeProperty('z-index');
+      box.style.removeProperty('align-items');
+      box.style.removeProperty('justify-content');
+    }
+    document.body.style.overflow='';
+    document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active')});
+    var h=document.getElementById('home'); if(h)h.classList.add('active');
+    document.querySelectorAll('nav button[data-page]').forEach(function(b){b.classList.toggle('active',b.dataset.page==='home')});
+    window.scrollTo(0,0);
+  }
+  function showPhotoBirthday(){
+    var p=profile(); if(!birthdayToday(p))return false;
+    var box=document.getElementById('birthdaySpecial'); if(!box)return false;
+    var bn=document.getElementById('birthdayName'), bm=document.getElementById('birthdayMessage');
+    if(bn)bn.textContent=p.name||'あなた';
+    if(bm && !bm.textContent.trim())bm.textContent='お誕生日おめでとうございます。新しい一年が、やさしい光と小さな幸せに包まれますように。';
+    box.classList.add('show');
+    box.style.setProperty('display','flex','important');
+    box.style.setProperty('visibility','visible','important');
+    box.style.setProperty('opacity','1','important');
+    box.style.setProperty('z-index','99999','important');
+    document.body.style.overflow='hidden';
+    return true;
+  }
+  window.closeBirthdaySpecial=goHome;
+  document.addEventListener('click',function(e){
+    var b=e.target.closest && e.target.closest('nav button[data-page="home"]');
+    if(b){setTimeout(showPhotoBirthday,40)}
+  },true);
+  // Existing startup birthday logic remains; this is a safe fallback.
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(showPhotoBirthday,350)});
+  else setTimeout(showPhotoBirthday,350);
+})();
+</script>
+</body></html>
