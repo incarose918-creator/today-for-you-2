@@ -27,8 +27,8 @@ h3{font-size:22px;margin:26px 20px 12px}.grid{display:grid;grid-template-columns
 .photo-card{overflow:hidden;padding:0}.photo-card img{width:100%;height:190px;object-fit:cover;display:block}.photo-card .inner{padding:18px}
 textarea,input{width:100%;border:1px solid var(--line);border-radius:17px;padding:14px;background:white;font:inherit}textarea{min-height:150px}
 .btn{width:100%;border:0;border-radius:18px;padding:14px;background:linear-gradient(90deg,var(--pink),var(--lav));color:white;font-weight:700}
-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,100%);display:grid;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.97);border-top:1px solid var(--line);padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:20;backdrop-filter:blur(12px)}
-nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}nav button b{display:block;font-size:25px;margin-bottom:3px}nav button.active{color:#df4c93;font-weight:700}
+nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,100%);display:grid;grid-template-columns:repeat(6,1fr);background:rgba(255,255,255,.97);border-top:1px solid var(--line);padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:20;backdrop-filter:blur(12px)}
+nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:10px;padding:0 1px}nav button b{display:block;font-size:22px;margin-bottom:3px}nav button.active{color:#df4c93;font-weight:700}
 /* diary history + photo */
 .diary-date-row{display:flex;gap:10px;align-items:center;margin-top:10px}
 .diary-date-row input[type="date"]{flex:1}
@@ -360,6 +360,10 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 <p class="muted" id="tfyScheduleStatus" style="margin:10px 2px 0"></p>
 </div>
 </section>
+<section class="page" id="koyomi">
+<header><div class="eyebrow">TODAY FOR YOU</div><div class="title">今日の暦</div><div class="sub">月と暦から、今日の流れをやさしく確認。</div></header>
+<div id="tfyKoyomiPageBody"></div>
+</section>
 <section class="page" id="fortune">
 <header><div class="eyebrow">TODAY FOR YOU</div><div class="title">占い</div><div class="sub">今日のあなたの流れを、やさしくお届けします。</div></header>
 <div class="card">
@@ -530,6 +534,7 @@ nav button{border:0;background:none;color:#8d8089;font:inherit;font-size:11px}na
 <button class="active" data-page="home"><b>🌸</b>ホーム</button>
 <button data-page="calendar"><b>📅</b>カレンダー</button>
 <button data-page="fortune"><b>🔮</b>占い</button>
+<button data-page="koyomi"><b>🌙</b>暦</button>
 <button data-page="diary"><b>📖</b>日記</button>
 <button data-page="mypage"><b>👤</b>マイページ</button>
 </nav>
@@ -1510,7 +1515,8 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
  function boot(){const p=getProfile();if(p){fillSettings(p);updateCard(p);try{if(typeof render==='function')render()}catch(e){}}setTimeout(showBirthday,120)}
  document.addEventListener('DOMContentLoaded',boot);window.addEventListener('load',boot);window.addEventListener('pageshow',boot);document.addEventListener('visibilitychange',function(){if(!document.hidden)boot()});document.addEventListener('click',function(e){const b=e.target.closest&&e.target.closest('nav button[data-page]');if(!b)return;setTimeout(function(){const p=getProfile();if(p){fillSettings(p);updateCard(p)}if(b.dataset.page==='home')showBirthday()},30)},true);
 })();
-</script>\n<script id="tfyBirthdayPhotoControllerFinal">
+</script>
+<script id="tfyBirthdayPhotoControllerFinal">
 (function(){
   function profile(){try{return JSON.parse(localStorage.getItem('tfyProfile')||'null')}catch(e){return null}}
   function birthdayToday(p){
@@ -1560,33 +1566,46 @@ setTimeout(()=>{if(typeof tfyIntegrateHome==="function")tfyIntegrateHome();check
 })();
 </script>
 
-<style id="tfyHomeKoyomiSummaryStyle">
-.tfy-home-koyomi{margin:14px 0 18px;padding:16px;border-radius:20px;background:rgba(255,255,255,.84);box-shadow:0 8px 24px rgba(88,67,76,.08);border:1px solid rgba(190,160,170,.18)}
-.tfy-home-koyomi-title{font-size:17px;font-weight:700;color:#66535c;margin-bottom:10px}.tfy-home-koyomi-date{font-size:12px;color:#9a858e;margin-left:6px;font-weight:400}
-.tfy-home-koyomi-tags{display:flex;flex-wrap:wrap;gap:8px}.tfy-home-koyomi-tag{padding:7px 10px;border-radius:999px;background:#fff7f7;color:#705d65;font-size:13px;border:1px solid #f0dfe3}
-.tfy-home-koyomi-moon{margin-top:10px;font-size:13px;line-height:1.65;color:#786a71}.tfy-home-koyomi-more{width:100%;margin-top:12px;border:0;border-radius:14px;padding:11px 12px;background:#d98b98;color:white;font-weight:700;font-size:14px}
+<style id="tfyKoyomiTabStyle">
+#koyomi #tfyKoyomiPageBody{padding:0 16px 28px}
+#koyomi .tfy-tab-date{text-align:center;color:#8f7d86;font-size:14px;margin:2px 0 14px}
+#koyomi .tfy-tab-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;margin:0 0 12px;box-shadow:0 7px 20px rgba(93,70,82,.05)}
+#koyomi .tfy-tab-type{font-size:12px;color:#a87991;font-weight:700;margin-bottom:5px}
+#koyomi .tfy-tab-name{font-size:20px;font-weight:800;color:#594b52;margin-bottom:5px}
+#koyomi .tfy-tab-reading{font-size:12px;color:#9b8a92;margin-left:6px;font-weight:500}
+#koyomi .tfy-tab-meaning{font-size:14px;line-height:1.75;color:#75666d}
+#koyomi .tfy-tab-note{font-size:12px;line-height:1.7;color:#94838b;padding:8px 4px 18px}
+#koyomi .tfy-tab-none{background:#fff7fb;border:1px solid #f1dce6;border-radius:18px;padding:14px;color:#806f77;font-size:14px;margin-bottom:12px}
 </style>
-<script id="tfyHomeKoyomiSummaryScript">
+<script id="tfyKoyomiTabScript">
 (function(){
- function build(){
-  var home=document.getElementById('home'); if(!home||typeof tfyCalendarFacts!=='function'||typeof tfyRokuyoAccurate!=='function')return;
-  var now=new Date(), f=tfyCalendarFacts(now), rok=tfyRokuyoAccurate(now)||'—', moon=(typeof tfyMoonIntegrated==='function'?tfyMoonIntegrated(now):null);
-  var tags=['📅 '+rok];
-  if(f.ichiryu)tags.push('🌱 一粒万倍日');
-  if(f.tensha)tags.push('☀️ 天赦日');
-  if(f.fujo)tags.push('⚠️ 不成就日');
-  if(f.kami)tags.push('⛩️ 神吉日');
-  if(f.k&&f.k.branch==='寅')tags.push('🐯 寅の日');
-  if(f.k&&f.k.branch==='巳')tags.push(f.k.name==='己巳'?'🐍 己巳の日':'🐍 巳の日');
-  var box=document.getElementById('tfyHomeKoyomiSummary');
-  if(!box){box=document.createElement('div');box.id='tfyHomeKoyomiSummary';box.className='tfy-home-koyomi';var anchor=home.querySelector('[data-tfy-integrated="1"]'); if(anchor)anchor.insertAdjacentElement('afterend',box); else home.insertBefore(box,home.firstChild);}
-  var mtxt=moon?(moon.i+' '+moon.p+'　月齢 約'+moon.a.toFixed(1)):'';
-  box.innerHTML='<div class="tfy-home-koyomi-title">今日の暦 <span class="tfy-home-koyomi-date">'+(now.getMonth()+1)+'月'+now.getDate()+'日</span></div><div class="tfy-home-koyomi-tags">'+tags.map(function(x){return '<span class="tfy-home-koyomi-tag">'+x+'</span>'}).join('')+'</div>'+(mtxt?'<div class="tfy-home-koyomi-moon">🌙 '+mtxt+'</div>':'')+'<button type="button" class="tfy-home-koyomi-more" onclick="tfyOpenKoyomi()">今日の暦を詳しく見る　›</button>';
+ function esc(v){return String(v==null?'':v).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]})}
+ function card(type,name,reading,meaning){return '<div class="tfy-tab-card"><div class="tfy-tab-type">'+esc(type)+'</div><div class="tfy-tab-name">'+esc(name)+(reading?'<span class="tfy-tab-reading">'+esc(reading)+'</span>':'')+'</div><div class="tfy-tab-meaning">'+esc(meaning||'')+'</div></div>'}
+ function render(){
+  var body=document.getElementById('tfyKoyomiPageBody'); if(!body)return;
+  var now=new Date();
+  if(typeof tfyCalendarFacts!=='function'||typeof tfyRokuyoAccurate!=='function'){body.innerHTML='<div class="tfy-tab-none">暦を読み込んでいます…</div>';return}
+  var f=tfyCalendarFacts(now), rok=tfyRokuyoAccurate(now)||'—';
+  var moon=(typeof tfyMoonIntegrated==='function'?tfyMoonIntegrated(now):null);
+  var meanings=(typeof TFY_KOYOMI_MEANINGS!=='undefined'?TFY_KOYOMI_MEANINGS:{});
+  var html='<div class="tfy-tab-date">'+now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日</div>';
+  html+=card('六曜',rok,'',meanings[rok]||'昔から日取りの目安として親しまれてきた六曜です。');
+  if(moon)html+=card('月',moon.i+' '+moon.p,'月齢 約'+moon.a.toFixed(1),moon.w||'月の満ち欠けを表しています。');
+  var n=0;
+  if(f.ichiryu){html+=card('選日','🌱 一粒万倍日','（いちりゅうまんばいび）',meanings['一粒万倍日']);n++}
+  if(f.tensha){html+=card('暦注','☀️ 天赦日','（てんしゃにち）',meanings['天赦日']);n++}
+  if(f.kami){html+=card('暦注','⛩️ 神吉日','（かみよしにち）',meanings['神吉日']);n++}
+  if(f.fujo){html+=card('選日','⚠️ 不成就日','（ふじょうじゅび）',meanings['不成就日']);n++}
+  if(f.k&&f.k.branch==='寅'){html+=card('十二支の日','🐯 寅の日','',meanings['寅の日']);n++}
+  if(f.k&&f.k.branch==='巳'){html+=card('十二支の日',f.k.name==='己巳'?'🐍 己巳の日':'🐍 巳の日','',meanings['巳の日']);n++}
+  if(!n)html+='<div class="tfy-tab-none">今日は、一粒万倍日・天赦日・不成就日などの特別な日柄には該当していません。</div>';
+  html+='<div class="tfy-tab-note">※ 六曜・暦注・選日は、昔から伝わる暦の考え方です。月齢は天文学的周期による概算です。吉凶にとらわれすぎず、毎日の小さな目安としてお楽しみください。</div>';
+  body.innerHTML=html;
  }
- document.addEventListener('DOMContentLoaded',function(){setTimeout(build,800)});
- window.addEventListener('pageshow',function(){setTimeout(build,300)});
- document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('nav button[data-page="home"]');if(b)setTimeout(build,350)},true);
- window.tfyBuildHomeKoyomiSummary=build;
+ window.tfyRenderKoyomiTab=render;
+ document.addEventListener('DOMContentLoaded',function(){setTimeout(render,350)});
+ window.addEventListener('pageshow',function(){setTimeout(render,200)});
+ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('nav button[data-page="koyomi"]');if(b)setTimeout(render,40)},true);
 })();
 </script>
 </body></html>
